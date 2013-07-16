@@ -1,10 +1,10 @@
 ﻿/*
 
 Author:
-    Julius Seltenheim 
+    Julius Seltenheim (mail@julius-seltenheim.com)
     
 */
-var LINE_WIDTH=3;
+var LINE_WIDTH = 3;
 
 
 window.Timeline = Timeline;
@@ -17,15 +17,24 @@ function Timeline(_htmlElement, _fromYear) {
     this.timelineEntries = [];
     this.timelineShapes = {};
 
+    this.colors = ["E8D0A9", "B7AFA3", "C1DAD6", "F5FAFA", "ACD1E9", "6D929B"];
+    this.lastColor = 0;
+
     this.initialize();
 }
 
 
 Timeline.prototype.initialize = function () {
+    //make sure element is empty
+    while (this.location.firstChild) {
+        this.location.removeChild(this.location.firstChild);
+    }
+
+
     this.masterSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     this.masterSvg.setAttribute("version", "1.2");
     this.masterSvg.setAttribute("baseProfile", "tiny");
-    this.masterSvg.setAttribute("style", "position:absolute;left:0px;");
+    this.masterSvg.setAttribute("style", "position:absolute;left:0px;top:0px;");
     this.svgLine = createLine(this);
     this.svgTicks = createTicks(this);
     this.svgText = createStartNumber(this);
@@ -61,13 +70,27 @@ Timeline.prototype.getHeightForLines = function () {
     return this.location.clientHeight - 20;
 }
 
+Timeline.prototype.getNextColor = function () {
+    var colorIndex = this.lastColor + 1;
+
+    if (this.colors.length == colorIndex)
+        colorIndex = 0;
+
+    this.lastColor = colorIndex;
+
+    return this.colors[colorIndex];
+}
+
 Timeline.prototype.getEntriesInTimeRange = function (fromDate, toDate) {
+    console.log("entries between " + fromDate + " and " + toDate);
     var resultList = [];
     for (index in this.timelineEntries) {
         var timelineEntry = this.timelineEntries[index];
         if ((timelineEntry.fromDate >= fromDate && timelineEntry.fromDate <= toDate) ||
-            (timelineEntry.toDate >= fromDate && timelineEntry.toDate <= toDate)) {
+            (timelineEntry.toDate >= fromDate && timelineEntry.toDate <= toDate) ||
+            (timelineEntry.fromDate < fromDate && timelineEntry.toDate > toDate)) {
             resultList.push(timelineEntry);
+            console.log(timelineEntry);
         }
     }
 
@@ -79,7 +102,7 @@ Timeline.prototype.getTakenLevelsInTimeRange = function (fromDate, toDate) {
     var result = [];
 
     for (index in entries) {
-        var timelineEntry = this.timelineEntries[index];
+        var timelineEntry = entries[index];
         if (result.indexOf(timelineEntry.level) == -1)
             result.push(timelineEntry.level);
     }
@@ -105,7 +128,8 @@ Timeline.prototype.getPosForDate = function (date) {
     var posOnTimespan = date.getTime() - startTimestamp;
     var percentFromStart = posOnTimespan / timespan;
 
-    return this.getHeightForLines() -  (this.getHeightForLines() * percentFromStart);
+    var pos = this.getHeightForLines() - (this.getHeightForLines() * percentFromStart);
+    return pos < 0 ? 0 : pos > this.getHeightForLines() ? this.getHeightForLines() : pos;
 }
 
 function createLine(timeline) {
@@ -236,7 +260,7 @@ TimelineEntry.prototype.getShapeForTimeline = function (timeline) {
         left = timelineCenter + 3 + 6 * (newLevel / 2);
 
     } else { //on left side
-        left = timelineCenter - 7 - 6 * ((newLevel-1) / 2);
+        left = timelineCenter - 9 - 6 * ((newLevel-1) / 2);
     }
 
 
@@ -247,7 +271,7 @@ TimelineEntry.prototype.getShapeForTimeline = function (timeline) {
     shape.setAttribute("x", left);
     shape.setAttribute("height", height);
     shape.setAttribute("width", 5);
-    shape.setAttribute("style", "fill:#9acb42;stroke:black;stroke-width:1;");
+    shape.setAttribute("style", "fill:#"+timeline.getNextColor()+";stroke:black;stroke-width:1;");
 
     return shape;
 
