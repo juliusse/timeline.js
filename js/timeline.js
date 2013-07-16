@@ -35,6 +35,15 @@ Timeline.prototype.initialize = function () {
     this.masterSvg.setAttribute("version", "1.2");
     this.masterSvg.setAttribute("baseProfile", "tiny");
     this.masterSvg.setAttribute("style", "position:absolute;left:0px;top:0px;");
+
+    //set hover style
+    var style = document.createElement("style");
+    style.setAttribute("type", "text/css");
+    var styleText = document.createTextNode(".js_timeline_entry:hover{opacity:0.5;}");
+    style.appendChild(styleText);
+
+    this.masterSvg.appendChild(style);
+
     this.svgLine = createLine(this);
     this.svgTicks = createTicks(this);
     this.svgText = createStartNumber(this);
@@ -82,7 +91,6 @@ Timeline.prototype.getNextColor = function () {
 }
 
 Timeline.prototype.getEntriesInTimeRange = function (fromDate, toDate) {
-    console.log("entries between " + fromDate + " and " + toDate);
     var resultList = [];
     for (index in this.timelineEntries) {
         var timelineEntry = this.timelineEntries[index];
@@ -90,7 +98,6 @@ Timeline.prototype.getEntriesInTimeRange = function (fromDate, toDate) {
             (timelineEntry.toDate >= fromDate && timelineEntry.toDate <= toDate) ||
             (timelineEntry.fromDate < fromDate && timelineEntry.toDate > toDate)) {
             resultList.push(timelineEntry);
-            console.log(timelineEntry);
         }
     }
 
@@ -271,8 +278,55 @@ TimelineEntry.prototype.getShapeForTimeline = function (timeline) {
     shape.setAttribute("x", left);
     shape.setAttribute("height", height);
     shape.setAttribute("width", 5);
-    shape.setAttribute("style", "fill:#"+timeline.getNextColor()+";stroke:black;stroke-width:1;");
+    shape.setAttribute("style", "fill:#" + timeline.getNextColor() + ";stroke:black;stroke-width:1;pointer-events:all;");
+    shape.setAttribute("class", "js_timeline_entry");
+    shape.setAttribute("onmouseover", "tooltip(event, '" + this.title + "',this)");
+    shape.setAttribute("onmouseout", "tooltipHide()");
 
     return shape;
 
+}
+
+var jsTimelineTooltipDiv = null;
+function tooltip(event, text, element) {
+
+    var offsetDistance = 20;
+
+    var x = event.clientX;
+    var y = event.clientY;
+
+    var tt = getNewTooltipDiv();
+    var elem = element;
+    tt.style.top = y + 'px';
+    tt.style.left = (x+10) + 'px';
+    tt.style.display = 'block';
+    tt.style.backgroundColor = "black";
+    tt.style.color = "white";
+    tt.style.font = "Arial";
+    tt.style.fontSize = "10px";
+    tt.style.padding = "3px";
+    tt.innerHTML = text;
+
+
+    
+}
+
+function tooltipHide() {
+    destroyCurrentTooltip();
+}
+
+function destroyCurrentTooltip() {
+    if (jsTimelineTooltipDiv != null) {
+        document.getElementsByTagName("body")[0].removeChild(jsTimelineTooltipDiv);
+    }
+    jsTimelineTooltipDiv = null;
+}
+
+function getNewTooltipDiv(parent) {
+    destroyCurrentTooltip();
+    var div = document.createElement("div");
+    div.style.position = "absolute";
+    document.getElementsByTagName("body")[0].appendChild(div);
+    jsTimelineTooltipDiv = div;
+    return div;
 }
