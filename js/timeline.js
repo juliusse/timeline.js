@@ -17,6 +17,9 @@ function Timeline(_htmlElement, _fromYear) {
     this.timelineEntries = [];
     this.timelineShapes = {};
 
+    //to see the arrow head
+    this.offsetTop = 15;
+
     this.colors = ["E8D0A9", "B7AFA3", "C1DAD6", "F5FAFA", "ACD1E9", "6D929B"];
     this.lastColor = 0;
 
@@ -76,7 +79,7 @@ Timeline.prototype.getFromYear = function () {
 }
 
 Timeline.prototype.getHeightForLines = function () {
-    return this.location.clientHeight - 20;
+    return this.location.clientHeight - 20 - this.offsetTop;
 }
 
 Timeline.prototype.getNextColor = function () {
@@ -136,12 +139,12 @@ Timeline.prototype.getPosForDate = function (date) {
     var percentFromStart = posOnTimespan / timespan;
 
     var pos = this.getHeightForLines() - (this.getHeightForLines() * percentFromStart);
-    return pos < 0 ? 0 : pos > this.getHeightForLines() ? this.getHeightForLines() : pos;
+    return (pos < 0 ? 0 : pos > this.getHeightForLines() ? this.getHeightForLines() : pos) + this.offsetTop;
 }
 
 function createLine(timeline) {
     "use strict";
-    var height = timeline.getHeightForLines();
+    var height = timeline.getHeightForLines()+timeline.offsetTop;
     var width = timeline.getWidth();
 
     var marginLeft = (width) / 2;
@@ -162,7 +165,7 @@ function createLine(timeline) {
 
 function createTicks(timeline) {
     "use strict";
-    var height = timeline.getHeightForLines();
+    var height = timeline.getHeightForLines() + timeline.offsetTop;
     var width = timeline.getWidth();
     var marginLeft = (width) / 2;
     var stepSize = height / 10;
@@ -187,7 +190,7 @@ function createTicks(timeline) {
 
 function createStartNumber(timeline) {
     "use strict";
-    var height = timeline.getHeightForLines();
+    var height = timeline.getHeightForLines() + timeline.offsetTop;
     var width = timeline.getWidth();
     var left = (width) / 2 - 15;
 
@@ -255,9 +258,9 @@ TimelineEntry.prototype.getShapeForTimeline = function (timeline) {
 
     this.level = newLevel;
 
-    var xLow = timeline.getPosForDate(this.fromDate);
-    var xHigh = timeline.getPosForDate(this.toDate);
-    var height = xLow - xHigh;
+    var yLow = timeline.getPosForDate(this.fromDate);
+    var yHigh = timeline.getPosForDate(this.toDate);
+    var height = yLow - yHigh;
 
     var width = timeline.getWidth();
     var timelineCenter = width / 2;
@@ -274,7 +277,7 @@ TimelineEntry.prototype.getShapeForTimeline = function (timeline) {
 
 
     var shape = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-    shape.setAttribute("y", xHigh);
+    shape.setAttribute("y", yHigh);
     shape.setAttribute("x", left);
     shape.setAttribute("height", height);
     shape.setAttribute("width", 5);
@@ -292,8 +295,8 @@ function tooltip(event, text, element) {
 
     var offsetDistance = 20;
 
-    var x = event.clientX;
-    var y = event.clientY;
+    var x = event.pageX;
+    var y = event.pageY;
 
     var tt = getNewTooltipDiv();
     var elem = element;
