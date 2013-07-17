@@ -8,10 +8,11 @@ Author:
 //TimelineEntry stuff
 
 
-function TimelineEntry(_title, _fromDate, _toDate) {
+function TimelineEntry(_title, _fromDate, _toDate, _color) {
     this.title = _title;
     this.fromDate = _fromDate;
     this.toDate = _toDate;
+    this.color = _color;
     this.level = 0;
 }
 
@@ -22,7 +23,7 @@ TimelineEntry.prototype.getHash = function () {
 TimelineEntry.prototype.getShapeForTimeline = function (timeline) {
     //decide level
     var takenLevels = timeline.getTakenLevelsInTimeRange(this.fromDate, this.toDate);
-
+    var color = !this.color ? timeline.getNextColor() : this.color;
     var newLevel = 0;
     while (takenLevels.indexOf(newLevel) != -1) {
         newLevel += 1;
@@ -53,10 +54,16 @@ TimelineEntry.prototype.getShapeForTimeline = function (timeline) {
     shape.setAttribute("x", left);
     shape.setAttribute("height", height);
     shape.setAttribute("width", 5);
-    shape.setAttribute("style", "fill:#" + timeline.getNextColor() + ";stroke:black;stroke-width:1;pointer-events:all;");
+    shape.setAttribute("style", "fill:#" + color + ";stroke:black;stroke-width:1;pointer-events:all;");
     shape.setAttribute("class", "js_timeline_entry");
-    shape.setAttribute("onmouseover", "tooltip(evt, '" + this.title + "',this)");
-    shape.setAttribute("onmouseout", "tooltipHide()");
+
+    var entry = this;
+    shape.onmouseover = function(event) {
+        entry.tooltip = new Tooltip(event, entry.title);
+    };
+    shape.onmouseout = function () {
+        entry.tooltip.destroyExistingTooltip();
+    }
 
     return shape;
 

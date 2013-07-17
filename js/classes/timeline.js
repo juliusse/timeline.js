@@ -8,7 +8,6 @@ Author:
 window.Timeline = Timeline;
 
 var js = {};
-js.timelineInstances = [];
 
 var defaultConfig = {};
 defaultConfig.scale = {};
@@ -27,10 +26,6 @@ Timeline.prototype.defaultConfig = defaultConfig;
 //Timeline stuff
 
 function Timeline(_htmlElement, _fromYear, _config) {
-    //set id
-    this.id = js.timelineInstances.length;
-    js.timelineInstances.push(this);
-
     //init config
     this.config = !_config ? this.defaultConfig : _config;
     this.initializeConfig();

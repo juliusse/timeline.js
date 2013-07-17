@@ -3,48 +3,50 @@
 Author:
     Julius Seltenheim (mail@julius-seltenheim.com)
     
+    Tooltip is right now a single instance class.
+    When another instance is created, the old one will be destroyed
 */
 
-var jsTimelineTooltipDiv = null;
-function tooltip(event, text, element) {
+var jsTimelineTooltip = null;
+
+
+function Tooltip(event, text) {
+    //check if tooltip exists
+    this.destroyExistingTooltip();
+    jsTimelineTooltip = this;
+    this.div = this.createDiv();
+    
 
     var offsetDistance = 20;
 
     var x = event.pageX;
     var y = event.pageY;
 
-    var tt = getNewTooltipDiv();
-    var elem = element;
-    tt.style.top = y + 'px';
-    tt.style.left = (x + 10) + 'px';
-    tt.style.display = 'block';
-    tt.style.backgroundColor = "black";
-    tt.style.color = "white";
-    tt.style.font = "Arial";
-    tt.style.fontSize = "10px";
-    tt.style.padding = "3px";
-    tt.innerHTML = text;
+    this.div.style.top = y + 'px';
+    this.div.style.left = (x + 10) + 'px';
 
+    this.div.innerHTML = text;
 
-
+    document.getElementsByTagName("body")[0].appendChild(this.div);
 }
 
-function tooltipHide() {
-    destroyCurrentTooltip();
-}
-
-function destroyCurrentTooltip() {
-    if (jsTimelineTooltipDiv != null) {
-        document.getElementsByTagName("body")[0].removeChild(jsTimelineTooltipDiv);
-    }
-    jsTimelineTooltipDiv = null;
-}
-
-function getNewTooltipDiv(parent) {
-    destroyCurrentTooltip();
+Tooltip.prototype.createDiv = function () {
     var div = document.createElement("div");
     div.style.position = "absolute";
-    document.getElementsByTagName("body")[0].appendChild(div);
-    jsTimelineTooltipDiv = div;
+    div.style.display = 'block';
+    div.style.backgroundColor = "black";
+    div.style.color = "white";
+    div.style.font = "Arial";
+    div.style.fontSize = "10px";
+    div.style.padding = "3px";
+    
+    
     return div;
+}
+
+Tooltip.prototype.destroyExistingTooltip = function () {
+    if (jsTimelineTooltip != null) {
+        document.getElementsByTagName("body")[0].removeChild(jsTimelineTooltip.div);
+    }
+    jsTimelineTooltip = null;
 }
