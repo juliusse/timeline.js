@@ -12,16 +12,19 @@
     <div style="margin-left: auto; margin-right:auto; width:600px; background-color:#EEEEEE; height:1000px; text-align:center;" >
         <h1>timeline.js demo</h1>
         <div id="timeline" style="margin-left:30px; float:left; height:800px; width:50px; background-color:white;position:relative;"></div>
-
+        <div id="highlight1">When I am in this text, <code>first</code> will be highlighted</div>
     </div>
+    
 
     <script type="text/javascript">
 
 
-        var timeline = new Timeline(document.getElementById("timeline"),2009);
-        timeline.addTimelineEntry(new TimelineEntry("My Job", new Date(2010, 1, 1), new Date(2012, 5, 1)));
-        timeline.addTimelineEntry(new TimelineEntry("My Job", new Date(2009, 5, 1), new Date(2010, 5, 1)));
-        timeline.addTimelineEntry(new TimelineEntry("My Job", new Date(2010, 1, 1), new Date(2014, 5, 1)));
+        var timeline = new Timeline(document.getElementById("timeline"), 2009);
+        var entry1 = new TimelineEntry("first", new Date(2010, 1, 1), new Date(2012, 5, 1));
+        timeline.addTimelineEntry(entry1);
+        entry1.addHTMLElementToTriggerHover(document.getElementById("highlight1"));
+        timeline.addTimelineEntry(new TimelineEntry("second", new Date(2009, 5, 1), new Date(2010, 5, 1)));
+        timeline.addTimelineEntry(new TimelineEntry("third", new Date(2010, 1, 1), new Date(2014, 5, 1)));
 
     </script>
 

@@ -14,6 +14,7 @@ function TimelineEntry(_title, _fromDate, _toDate, _color) {
     this.toDate = _toDate;
     this.color = _color;
     this.level = 0;
+    this.shapeList = [];
 }
 
 TimelineEntry.prototype.getHash = function () {
@@ -57,14 +58,37 @@ TimelineEntry.prototype.getShapeForTimeline = function (timeline) {
     shape.setAttribute("style", "fill:#" + color + ";stroke:black;stroke-width:1;pointer-events:all;");
     shape.setAttribute("class", "js_timeline_entry");
 
+
+    this.shapeList.push(shape);
+
     var entry = this;
-    shape.onmouseover = function(event) {
+    shape.onmouseover = function (event) {
         entry.tooltip = new Tooltip(event, entry.title);
+        shape.classList.add("hover");
+
     };
     shape.onmouseout = function () {
         entry.tooltip.destroyExistingTooltip();
+        shape.classList.remove("hover");
     }
 
     return shape;
 
+}
+
+TimelineEntry.prototype.addHTMLElementToTriggerHover = function (hTMLElement) {
+    var entry = this;
+    for (index in this.shapeList) {
+        var shape = this.shapeList[index];
+        hTMLElement.onmouseover = function (event) {
+            shape.classList.add("hover");
+
+        };
+    }
+    for (index in this.shapeList) {
+        var shape = this.shapeList[index];
+        hTMLElement.onmouseout = function () {
+            shape.classList.remove("hover");
+        }
+    }
 }

@@ -57,7 +57,7 @@ Timeline.prototype.initialize = function () {
     //set hover style
     var style = document.createElement("style");
     style.setAttribute("type", "text/css");
-    var styleText = document.createTextNode(".js_timeline_entry:hover{opacity:0.5;}");
+    var styleText = document.createTextNode(".js_timeline_entry.hover{opacity:0.5;}");
     style.appendChild(styleText);
 
     this.masterSvg.appendChild(style);
