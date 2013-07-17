@@ -37,7 +37,7 @@ Timeline.prototype.initialize = function () {
     this.masterSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     this.masterSvg.setAttribute("version", "1.2");
     this.masterSvg.setAttribute("baseProfile", "tiny");
-    this.masterSvg.setAttribute("style", "position:absolute;left:0px;top:0px;");
+    this.masterSvg.setAttribute("style", "position:absolute;left:0px;top:0px;width:100%;height:100%;");
 
     //set hover style
     var style = document.createElement("style");
@@ -267,10 +267,10 @@ TimelineEntry.prototype.getShapeForTimeline = function (timeline) {
 
     var left = 0;
     if (newLevel % 2 == 0) { //on right side
-        left = timelineCenter + 3 + 6 * (newLevel / 2);
+        left = timelineCenter + 1 + 6 * (newLevel / 2);
 
     } else { //on left side
-        left = timelineCenter - 9 - 6 * ((newLevel-1) / 2);
+        left = timelineCenter - 7 - 6 * ((newLevel-1) / 2);
     }
 
 
@@ -283,7 +283,7 @@ TimelineEntry.prototype.getShapeForTimeline = function (timeline) {
     shape.setAttribute("width", 5);
     shape.setAttribute("style", "fill:#" + timeline.getNextColor() + ";stroke:black;stroke-width:1;pointer-events:all;");
     shape.setAttribute("class", "js_timeline_entry");
-    shape.setAttribute("onmouseover", "tooltip(event, '" + this.title + "',this)");
+    shape.setAttribute("onmouseover", "tooltip(evt, '" + this.title + "',this)");
     shape.setAttribute("onmouseout", "tooltipHide()");
 
     return shape;
