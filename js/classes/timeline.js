@@ -191,7 +191,7 @@ Timeline.prototype.addTimelineEntry = function (timelineEntry) {
 }
 
 Timeline.prototype.getPosForDate = function (date) {
-    var startTimestamp = new Date(this.fromYear, 1, 1).getTime();
+    var startTimestamp = new Date(this.fromYear, 0, 1).getTime();
     var nowTimestamp = new Date().getTime();
     var timespan = nowTimestamp - startTimestamp;
 
@@ -199,10 +199,16 @@ Timeline.prototype.getPosForDate = function (date) {
     var percentFromStart = posOnTimespan / timespan;
 
     var offsetTop = this.getTopOffsetForEntry();
-    var maxHeight = this.getHeight() - this.getBottomOffsetForEntry();
+    var maxHeight = this.getHeightForEntry();
 
-    var pos = offsetTop + this.getHeightForEntry() - (this.getHeightForEntry() * percentFromStart);
-    return pos < offsetTop ? offsetTop : pos > maxHeight ? maxHeight : pos;
+    if (percentFromStart >= 1) {
+        return offsetTop;
+    } else if (percentFromStart <= 0) {
+        return offsetTop + maxHeight;
+    } else {
+        var pos = maxHeight - (maxHeight * percentFromStart) + offsetTop
+        return pos;
+    }
 }
 
 /*
@@ -236,17 +242,21 @@ Timeline.prototype.updateScale = function () {
 Timeline.prototype.updateTicks = function() {
     "use strict";
 
-    var height = this.getHeightForScale();
-    var offsetTop = this.getTopOffsetForScale();
+    var height = this.getHeightForEntry();
+    var offsetTop = this.getTopOffsetForEntry();
     var withLabels = this.config.drawTickLabels;
 
     var center = this.getCenter();
     var widthHalf = 8;
 
     //calculate step size
-    var fromYear = this.getFromYear()
-    var ticks = new Date().getFullYear() - fromYear + 1;
+    var fromTimestamp = new Date(this.getFromYear(), 0, 1).getTime();
+    var nowTimestamp = new Date().getTime();
+    var timespan = nowTimestamp - fromTimestamp;
+    var ticks = timespan / (31536000000 + 21600000); //a year + leap
+
     var stepSize = height / ticks;
+    console.log(height, ticks, stepSize);
 
     if (this.tickSvgs) {
         for (index in this.tickSvgs) {
@@ -279,7 +289,7 @@ Timeline.prototype.updateTicks = function() {
             text.setAttribute("font-size", "10");
 
 
-            var str = document.createTextNode((fromYear + i + ""));
+            var str = document.createTextNode((this.getFromYear() + i + ""));
             text.appendChild(str);
 
             this.tickSvgs.push(text);
