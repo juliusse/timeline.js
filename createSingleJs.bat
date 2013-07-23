@@ -3,9 +3,9 @@ echo "creating timeline.js..."
 cd js
 rm timeline.js
 
-type "classes\timeline.js" > timeline.js
-type "classes\timelineEntry.js" >> timeline.js
-type "classes\tooltip.js" >> timeline.js
+echo  /**/ > timeline.js
+for /r %%i in (*) do type %%i >> timeline.js
+
 
 cd ..
 echo "creation successful"

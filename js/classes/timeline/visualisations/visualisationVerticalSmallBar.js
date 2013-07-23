@@ -1,14 +1,4 @@
-﻿/*
-
-Author:
-    Julius Seltenheim (mail@julius-seltenheim.com)
-    
-*/
-
-window.Timeline = Timeline;
-
-var js = {};
-
+﻿
 var defaultConfig = {};
 defaultConfig.scale = {};
 defaultConfig.scale.lineWidth = 3;
@@ -21,155 +11,36 @@ defaultConfig.drawTickLabels = true;
 defaultConfig.entries = {};
 defaultConfig.entries.colors = ["f7c6c7", "fad8c7", "fef2c0", "bfe5bf", "bfdadc", "c7def8", "bfd4f2", "d4c5f9"];
 
-Timeline.prototype.defaultConfig = defaultConfig;
 
-//Timeline stuff
+function VisualisationVerticalSmallBar(timeline, _htmlElement, _config) {
 
-function Timeline(_htmlElement, _fromYear, _config) {
-    //init config
-    this.config = !_config ? this.defaultConfig : _config;
-    this.initializeConfig();
-
-    this.location = _htmlElement;
-    this.fromYear = _fromYear;
-    this.timelineEntries = [];
-    this.timelineShapes = {};
+    VisualisationBase.call(this, timeline, _htmlElement, !_config ? this.defaultConfig : _config);
 
     this.lastColor = 0;
-
-    this.initialize();
+    this.repaint();
 }
 
-Timeline.prototype.initializeConfig = function () {
-    //TODO merge values with default conf
-}
+VisualisationVerticalSmallBar.prototype = Object.create(VisualisationBase.prototype);
+VisualisationVerticalSmallBar.prototype.defaultConfig = defaultConfig;
 
-Timeline.prototype.initialize = function () {
-    //make sure element is empty
-    while (this.location.firstChild) {
-        this.location.removeChild(this.location.firstChild);
-    }
-
-
-    this.masterSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    this.masterSvg.setAttribute("style", "position:absolute;left:0px;top:0px;width:100%;height:100%;");
-
-    //set hover style
-    var style = document.createElement("style");
-    style.setAttribute("type", "text/css");
-    var styleText = document.createTextNode(".js_timeline_entry.hover{opacity:0.5;}");
-    style.appendChild(styleText);
-
-    this.masterSvg.appendChild(style);
-
+/*
+ * VisualisationBase Implementation
+ */
+VisualisationVerticalSmallBar.prototype.repaint = function () {
     this.updateScale();
     this.updateTicks();
     this.updateStartYearAndNowString();
-    this.updateArrowHead(this);
-
-    this.location.appendChild(this.masterSvg);
+    this.updateArrowHead();
+    this.updateEntries();
 }
 
-
-// getter
-
-Timeline.prototype.getWidth = function () {
-    return this.location.clientWidth;
-}
-
-Timeline.prototype.getCenter = function () {
+VisualisationVerticalSmallBar.prototype.getCenter = function () {
     var realCenter = this.getWidth() / 2;
     var usedCenter = realCenter * 0.9;
     return usedCenter;
 }
 
-Timeline.prototype.getHeight = function () {
-    return this.location.clientHeight;
-}
-
-Timeline.prototype.getFromYear = function () {
-    return this.fromYear;
-}
-
-// Height and offsets for Entry 
-Timeline.prototype.getTopOffsetForEntry = function () {
-    var offset = this.getTopOffsetForScale();
-
-    offset += this.config.scale.arrowHeadHeight + 2;
-
-    return offset;
-}
-
-Timeline.prototype.getBottomOffsetForEntry = function () {
-    return this.getBottomOffsetForScale();
-}
-
-Timeline.prototype.getHeightForEntry = function () {
-    var offset = this.getTopOffsetForEntry() + this.getBottomOffsetForScale();
-
-    return this.getHeight() - offset;
-}
-
-// Height and offsets for Scale
-
-Timeline.prototype.getTopOffsetForScale = function () {
-    var offset = 0;
-
-    if (this.config.drawToday) {
-        offset += this.config.scale.fontSize + 2;
-    }
-
-    return offset;
-}
-
-Timeline.prototype.getBottomOffsetForScale = function () {
-    var offset = 3;
-
-    if (this.config.drawBaseLineYear) {
-        offset += this.config.scale.fontSize + 2;
-    }
-
-    return offset;
-}
-
-Timeline.prototype.getHeightForScale = function () {
-    var offset = this.getTopOffsetForScale() + this.getBottomOffsetForScale();
-
-    return this.getHeight() - offset;
-}
-
-
-
-
-// timelineEntry related
-Timeline.prototype.getEntriesInTimeRange = function (fromDate, toDate) {
-    var resultList = [];
-    for (index in this.timelineEntries) {
-        var timelineEntry = this.timelineEntries[index];
-        if ((timelineEntry.fromDate >= fromDate && timelineEntry.fromDate <= toDate) ||
-            (timelineEntry.toDate >= fromDate && timelineEntry.toDate <= toDate) ||
-            (timelineEntry.fromDate < fromDate && timelineEntry.toDate > toDate)) {
-            resultList.push(timelineEntry);
-        }
-    }
-
-    return resultList;
-}
-
-Timeline.prototype.getTakenLevelsInTimeRange = function (fromDate, toDate) {
-    var entries = this.getEntriesInTimeRange(fromDate, toDate);
-    var result = [];
-
-    for (index in entries) {
-        var timelineEntry = entries[index];
-        if (result.indexOf(timelineEntry.level) == -1)
-            result.push(timelineEntry.level);
-    }
-
-    return result;
-}
-
-Timeline.prototype.getNextColor = function () {
+VisualisationVerticalSmallBar.prototype.getNextColor = function () {
     var colorIndex = this.lastColor + 1;
 
     if (this.config.entries.colors.length == colorIndex)
@@ -180,18 +51,8 @@ Timeline.prototype.getNextColor = function () {
     return this.config.entries.colors[colorIndex];
 }
 
-
-
-Timeline.prototype.addTimelineEntry = function (timelineEntry) {
-    var shape = timelineEntry.getShapeForTimeline(this);
-    this.timelineEntries.push(timelineEntry);
-    this.timelineShapes[timelineEntry.getHash()] = shape;
-
-    this.masterSvg.appendChild(shape);
-}
-
-Timeline.prototype.getPosForDate = function (date) {
-    var startTimestamp = new Date(this.fromYear, 0, 1).getTime();
+VisualisationVerticalSmallBar.prototype.getPosForDate = function (date) {
+    var startTimestamp = new Date(this.timeline.getFromYear(), 0, 1).getTime();
     var nowTimestamp = new Date().getTime();
     var timespan = nowTimestamp - startTimestamp;
 
@@ -211,11 +72,59 @@ Timeline.prototype.getPosForDate = function (date) {
     }
 }
 
+
+// Height and offsets for Entry 
+VisualisationVerticalSmallBar.prototype.getTopOffsetForEntry = function () {
+    var offset = this.getTopOffsetForScale();
+
+    offset += this.config.scale.arrowHeadHeight + 2;
+
+    return offset;
+}
+
+VisualisationVerticalSmallBar.prototype.getBottomOffsetForEntry = function () {
+    return this.getBottomOffsetForScale();
+}
+
+VisualisationVerticalSmallBar.prototype.getHeightForEntry = function () {
+    var offset = this.getTopOffsetForEntry() + this.getBottomOffsetForScale();
+
+    return this.getHeight() - offset;
+}
+
+// Height and offsets for Scale
+
+VisualisationVerticalSmallBar.prototype.getTopOffsetForScale = function () {
+    var offset = 0;
+
+    if (this.config.drawToday) {
+        offset += this.config.scale.fontSize + 2;
+    }
+
+    return offset;
+}
+
+VisualisationVerticalSmallBar.prototype.getBottomOffsetForScale = function () {
+    var offset = 3;
+
+    if (this.config.drawBaseLineYear) {
+        offset += this.config.scale.fontSize + 2;
+    }
+
+    return offset;
+}
+
+VisualisationVerticalSmallBar.prototype.getHeightForScale = function () {
+    var offset = this.getTopOffsetForScale() + this.getBottomOffsetForScale();
+
+    return this.getHeight() - offset;
+}
+
 /*
  Draw methods
  Each method keeps track of it's own elements
 */
-Timeline.prototype.updateScale = function () {
+VisualisationVerticalSmallBar.prototype.updateScale = function () {
     "use strict";
     var yStart = this.getTopOffsetForScale();
     var yEnd = this.getHeight() - this.getBottomOffsetForScale();
@@ -228,7 +137,7 @@ Timeline.prototype.updateScale = function () {
         this.masterSvg.appendChild(this.scaleLine);
     }
 
-    
+
     this.scaleLine.setAttribute("x1", center);
     this.scaleLine.setAttribute("y1", yStart);
 
@@ -239,7 +148,7 @@ Timeline.prototype.updateScale = function () {
 }
 
 //currently one tick per year
-Timeline.prototype.updateTicks = function() {
+VisualisationVerticalSmallBar.prototype.updateTicks = function () {
     "use strict";
 
     var height = this.getHeightForEntry();
@@ -250,16 +159,15 @@ Timeline.prototype.updateTicks = function() {
     var widthHalf = 8;
 
     //calculate step size
-    var fromTimestamp = new Date(this.getFromYear(), 0, 1).getTime();
+    var fromTimestamp = new Date(this.timeline.getFromYear(), 0, 1).getTime();
     var nowTimestamp = new Date().getTime();
     var timespan = nowTimestamp - fromTimestamp;
     var ticks = timespan / (31536000000 + 21600000); //a year + leap
 
     var stepSize = height / ticks;
-    console.log(height, ticks, stepSize);
 
     if (this.tickSvgs) {
-        for (index in this.tickSvgs) {
+        for (var index in this.tickSvgs) {
             this.masterSvg.removeChild(this.tickSvgs[index]);
         }
     }
@@ -289,7 +197,7 @@ Timeline.prototype.updateTicks = function() {
             text.setAttribute("font-size", "10");
 
 
-            var str = document.createTextNode((this.getFromYear() + i + ""));
+            var str = document.createTextNode((this.timeline.getFromYear() + i + ""));
             text.appendChild(str);
 
             this.tickSvgs.push(text);
@@ -298,10 +206,10 @@ Timeline.prototype.updateTicks = function() {
     }
 }
 
-Timeline.prototype.updateStartYearAndNowString = function() {
+VisualisationVerticalSmallBar.prototype.updateStartYearAndNowString = function () {
     "use strict";
     if (this.labelSvgs) {
-        for (index in this.labelSvgs) {
+        for (var index in this.labelSvgs) {
             this.masterSvg.removeChild(this.labelSvgs[index]);
         }
     }
@@ -333,7 +241,7 @@ Timeline.prototype.updateStartYearAndNowString = function() {
         baseLineYearSvg.setAttribute("fill", "black");
         baseLineYearSvg.setAttribute("font-size", fontSize);
 
-        var baseLineYearString = document.createTextNode(this.getFromYear());
+        var baseLineYearString = document.createTextNode(this.timeline.getFromYear());
         baseLineYearSvg.appendChild(baseLineYearString);
         this.labelSvgs.push(baseLineYearSvg);
         this.masterSvg.appendChild(baseLineYearSvg);
@@ -341,7 +249,7 @@ Timeline.prototype.updateStartYearAndNowString = function() {
     }
 }
 
-Timeline.prototype.updateArrowHead = function() {
+VisualisationVerticalSmallBar.prototype.updateArrowHead = function () {
     "use strict";
     var topOffset = this.getTopOffsetForScale();
     var lineWidth = this.config.scale.lineWidth;
@@ -350,7 +258,7 @@ Timeline.prototype.updateArrowHead = function() {
 
     var width = this.config.scale.arrowHeadWidth;
     var widthHalf = width / 2;
-    
+
     var arrowHeight = this.config.scale.arrowHeadHeight;
 
     var xStart = center - widthHalf;
@@ -369,4 +277,81 @@ Timeline.prototype.updateArrowHead = function() {
 
     this.arrowHeadSvg.setAttribute("points", xStart + "," + yStart + " " + xCenter + "," + yCenter + " " + xEnd + "," + yEnd);
     this.arrowHeadSvg.setAttribute("style", "fill:none;stroke:black;stroke-width:" + lineWidth);
+}
+
+VisualisationVerticalSmallBar.prototype.updateEntries = function () {
+    var allEntries = this.timeline.getTimelineEntries();
+    for (var index in this.timelineEntryVisualisationMaps) {
+        this.masterSvg.removeChild(this.timelineEntryVisualisationMaps[index]);
+    }
+
+    for (var index in allEntries) {
+        var entry = allEntries[index];
+        this.onNewTimelineEntry(entry);
+    }
+}
+
+VisualisationVerticalSmallBar.prototype.getShapeForTimelineEntry = function (timelineEntry) {
+    //decide level
+    var takenLevels = this.timeline.getTakenLevelsInTimeRange(timelineEntry.fromDate, timelineEntry.toDate, timelineEntry);
+    //decide color
+    if (!timelineEntry.color)
+        timelineEntry.color = this.getNextColor();
+    var color = timelineEntry.color;
+    var newLevel = 0;
+    while (takenLevels.indexOf(newLevel) != -1) {
+        newLevel += 1;
+    }
+
+    var level = newLevel;
+    timelineEntry.level = newLevel;
+
+    var yLow = this.getPosForDate(timelineEntry.fromDate);
+    var yHigh = this.getPosForDate(timelineEntry.toDate);
+    var height = yLow - yHigh;
+
+    var width = this.getWidth();
+    var timelineCenter = this.getCenter();
+
+    var left = 0;
+    if (newLevel % 2 == 0) { //on right side
+        left = timelineCenter + 1 + 6 * (newLevel / 2);
+
+    } else { //on left side
+        left = timelineCenter - 7 - 6 * ((newLevel - 1) / 2);
+    }
+
+
+
+
+    var shape = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+    shape.setAttribute("y", yHigh);
+    shape.setAttribute("x", left);
+    shape.setAttribute("height", height);
+    shape.setAttribute("width", 5);
+    shape.setAttribute("style", "fill:#" + color + ";stroke:black;stroke-width:1;pointer-events:all;");
+    shape.setAttribute("class", "js_timeline_entry");
+
+    shape.onmouseover = function (event) {
+        timelineEntry.tooltip = new Tooltip(event, timelineEntry.title);
+        shape.classList.add("hover");
+
+    };
+    shape.onmouseout = function () {
+        timelineEntry.tooltip.destroyExistingTooltip();
+        shape.classList.remove("hover");
+    }
+
+    return shape;
+}
+
+
+
+
+function addEvent(ele, type, func) {
+    if (ele.addEventListener) {
+        ele.addEventListener(type, func, false);
+    } else if (ele.attachEvent) {
+        ele.attachEvent("on" + type, func);
+    }
 }

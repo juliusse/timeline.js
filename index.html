@@ -2,9 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <title>timeline.js example</title>
-    <script type="text/javascript" src="js/classes/timeline.js"></script>
-    <script type="text/javascript" src="js/classes/timelineEntry.js"></script>
-    <script type="text/javascript" src="js/classes/tooltip.js"></script>
+    <script type="text/javascript" src="js/classes/timeline/timeline.js"></script>
+    <script type="text/javascript" src="js/classes/timeline/timelineEntry.js"></script>
+    <script type="text/javascript" src="js/classes/timeline/tooltip.js"></script>
+    <script type="text/javascript" src="js/classes/timeline/visualisations/visualisationBase.js"></script>
+    <script type="text/javascript" src="js/classes/timeline/visualisations/visualisationVerticalSmallBar.js"></script>
+    <script type="text/javascript" src="js/classes/timeline/visualisations/visualisationVerticalBigBar.js"></script>
 </head>
 
 <body>
@@ -12,19 +15,23 @@
     <div style="margin-left: auto; margin-right:auto; width:600px; background-color:#EEEEEE; height:1000px; text-align:center;" >
         <h1>timeline.js demo</h1>
         <div id="timeline" style="margin-left:30px; float:left; height:800px; width:50px; background-color:white;position:relative;"></div>
+        <div id="timeline2" style="margin-right:30px; float:right; height:800px; width:50px; background-color:white;position:relative;"></div>
         <div id="highlight1">When I am in this text, <code>first</code> will be highlighted</div>
+        
     </div>
     
 
     <script type="text/javascript">
 
-
-        var timeline = new Timeline(document.getElementById("timeline"), 2009);
+        //document.getElementById("timeline")
+        var timeline = new Timeline(2009);
+        timeline.addVisualisation(Timeline.Visualisations.VerticalSmallBar, document.getElementById("timeline"));
         var entry1 = new TimelineEntry("first", new Date(2009, 3, 1), new Date(2012, 5, 1));
         timeline.addTimelineEntry(entry1);
         entry1.addHTMLElementToTriggerHover(document.getElementById("highlight1"));
         timeline.addTimelineEntry(new TimelineEntry("second", new Date(2004, 5, 1), new Date(2011, 11, 31)));
         timeline.addTimelineEntry(new TimelineEntry("third", new Date(2010, 0, 1), new Date(2014, 5, 1)));
+        timeline.addVisualisation(Timeline.Visualisations.VerticalBigBar, document.getElementById("timeline2"));
 
     </script>
 
