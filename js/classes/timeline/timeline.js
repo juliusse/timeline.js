@@ -9,7 +9,8 @@ window.Timeline = Timeline;
 
 Timeline.Visualisations = {
     VerticalSmallBar: 1,
-    VerticalBigBar: 2
+    VerticalBigBar: 2,
+    VerticalMinimal: 3
 }
 
 
@@ -36,6 +37,8 @@ Timeline.prototype.addVisualisation = function (_visualisationType, _htmlElement
         vis = new VisualisationVerticalSmallBar(this, _htmlElement, _visualisationConfig);
     } else if (_visualisationType == Timeline.Visualisations.VerticalBigBar) {
         vis = new VisualisationVerticalBigBar(this, _htmlElement, _visualisationConfig);
+    } else if (_visualisationType == Timeline.Visualisations.VerticalMinimal) {
+        vis = new VisualisationVerticalMinimal(this, _htmlElement, _visualisationConfig);
     }
 
     if (vis != null) {

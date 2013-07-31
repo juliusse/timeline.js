@@ -13,8 +13,15 @@ defaultConfig.entries.colors = ["f7c6c7", "fad8c7", "fef2c0", "bfe5bf", "bfdadc"
 
 
 function VisualisationVerticalSmallBar(timeline, _htmlElement, _config) {
-
     VisualisationBase.call(this, timeline, _htmlElement, !_config ? this.defaultConfig : _config);
+
+    //set hover style
+    var style = document.createElement("style");
+    style.setAttribute("type", "text/css");
+    var styleText = document.createTextNode(".js_timeline_entry.hover{opacity:0.5;} .js_timeline_entry{opacity:1;}");
+    style.appendChild(styleText);
+
+    this.masterSvg.appendChild(style);
 
     this.lastColor = 0;
     this.repaint();

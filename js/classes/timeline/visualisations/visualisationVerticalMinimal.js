@@ -5,22 +5,20 @@ defaultConfig.scale.lineWidth = 3;
 defaultConfig.scale.margin = 5;
 defaultConfig.scale.backgroundColor = "ffffff";
 defaultConfig.scale.fontSize = 15;
-defaultConfig.scale.arrowHeadHeight = 13;
 defaultConfig.scale.numbersMarginRight = 20;
-defaultConfig.drawToday = true;
 defaultConfig.drawBaseLineYear = true;
 defaultConfig.drawTickLabels = true;
 defaultConfig.entries = {};
 defaultConfig.entries.colors = ["f7c6c7", "fad8c7", "fef2c0", "bfe5bf", "bfdadc", "c7def8", "bfd4f2", "d4c5f9"];
 
 
-function VisualisationVerticalBigBar(timeline, _htmlElement, _config) {
+function VisualisationVerticalMinimal(timeline, _htmlElement, _config) {
     VisualisationBase.call(this, timeline, _htmlElement, !_config ? this.defaultConfig : _config);
 
     //set hover style
     var style = document.createElement("style");
     style.setAttribute("type", "text/css");
-    var styleText = document.createTextNode(".js_timeline_entry.hover{opacity:0.5;} .js_timeline_entry{opacity:1;}");
+    var styleText = document.createTextNode(".js_timeline_entry_"+this.id+".hover{stroke-width:1;stroke:black;}");
     style.appendChild(styleText);
 
     this.masterSvg.appendChild(style);
@@ -29,25 +27,23 @@ function VisualisationVerticalBigBar(timeline, _htmlElement, _config) {
     this.repaint();
 }
 
-VisualisationVerticalBigBar.prototype = Object.create(VisualisationBase.prototype);
-VisualisationVerticalBigBar.prototype.defaultConfig = defaultConfig;
+VisualisationVerticalMinimal.prototype = Object.create(VisualisationBase.prototype);
+VisualisationVerticalMinimal.prototype.defaultConfig = defaultConfig;
 
 /*
  * VisualisationBase Implementation
  */
-VisualisationVerticalBigBar.prototype.repaint = function () {
-    this.updateScale();
+VisualisationVerticalMinimal.prototype.repaint = function () {
     this.updateTicks();
-    this.updateStartYearAndNowString();
-    this.updateArrowHead();
+    this.updateStartYear();
     this.updateEntries();
 }
 
-VisualisationVerticalBigBar.prototype.getCenter = function () {
+VisualisationVerticalMinimal.prototype.getCenter = function () {
     return this.getWidth() / 2;
 }
 
-VisualisationVerticalBigBar.prototype.getNextColor = function () {
+VisualisationVerticalMinimal.prototype.getNextColor = function () {
     var colorIndex = this.lastColor + 1;
 
     if (this.config.entries.colors.length == colorIndex)
@@ -58,7 +54,7 @@ VisualisationVerticalBigBar.prototype.getNextColor = function () {
     return this.config.entries.colors[colorIndex];
 }
 
-VisualisationVerticalBigBar.prototype.getPosForDate = function (date) {
+VisualisationVerticalMinimal.prototype.getPosForDate = function (date) {
     var startTimestamp = new Date(this.timeline.getFromYear(), 0, 1).getTime();
     var nowTimestamp = new Date().getTime();
     var timespan = nowTimestamp - startTimestamp;
@@ -81,19 +77,17 @@ VisualisationVerticalBigBar.prototype.getPosForDate = function (date) {
 
 
 // Height and offsets for Entry 
-VisualisationVerticalBigBar.prototype.getTopOffsetForEntry = function () {
+VisualisationVerticalMinimal.prototype.getTopOffsetForEntry = function () {
     var offset = this.getTopOffsetForScale();
-
-    offset += this.config.scale.arrowHeadHeight;
 
     return offset;
 }
 
-VisualisationVerticalBigBar.prototype.getBottomOffsetForEntry = function () {
+VisualisationVerticalMinimal.prototype.getBottomOffsetForEntry = function () {
     return this.getBottomOffsetForScale();
 }
 
-VisualisationVerticalBigBar.prototype.getHeightForEntry = function () {
+VisualisationVerticalMinimal.prototype.getHeightForEntry = function () {
     var offset = this.getTopOffsetForEntry() + this.getBottomOffsetForScale();
 
     return this.getHeight() - offset;
@@ -101,17 +95,11 @@ VisualisationVerticalBigBar.prototype.getHeightForEntry = function () {
 
 // Height and offsets for Scale
 
-VisualisationVerticalBigBar.prototype.getTopOffsetForScale = function () {
-    var offset = 0;
-
-    if (this.config.drawToday) {
-        offset += this.config.scale.fontSize + 2;
-    }
-
-    return offset;
+VisualisationVerticalMinimal.prototype.getTopOffsetForScale = function () {
+    return 0;
 }
 
-VisualisationVerticalBigBar.prototype.getBottomOffsetForScale = function () {
+VisualisationVerticalMinimal.prototype.getBottomOffsetForScale = function () {
     var offset = 3;
 
     if (this.config.drawBaseLineYear) {
@@ -121,7 +109,7 @@ VisualisationVerticalBigBar.prototype.getBottomOffsetForScale = function () {
     return offset;
 }
 
-VisualisationVerticalBigBar.prototype.getHeightForScale = function () {
+VisualisationVerticalMinimal.prototype.getHeightForScale = function () {
     var offset = this.getTopOffsetForScale() + this.getBottomOffsetForScale();
 
     return this.getHeight() - offset;
@@ -131,48 +119,9 @@ VisualisationVerticalBigBar.prototype.getHeightForScale = function () {
  Draw methods
  Each method keeps track of it's own elements
 */
-VisualisationVerticalBigBar.prototype.updateScale = function () {
-    "use strict";
-    var yStart = this.getTopOffsetForEntry();
-    var yEnd = this.getHeight() - this.getBottomOffsetForEntry();
-
-    var lineWidth = this.config.scale.lineWidth;
-    var margin = this.config.scale.margin;
-    var width = this.getWidth();
-    var left = margin + lineWidth;
-    var right = width - (margin + lineWidth);
-
-    if (!this.scaleLine1) {
-        this.scaleLine1 = document.createElementNS("http://www.w3.org/2000/svg", "line");
-        this.masterSvg.appendChild(this.scaleLine1);
-        this.scaleLine2 = document.createElementNS("http://www.w3.org/2000/svg", "line");
-        this.masterSvg.appendChild(this.scaleLine2);
-        this.scaleBackground = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-        this.masterSvg.appendChild(this.scaleBackground);
-    }
-
-    this.scaleLine1.setAttribute("x1", left);
-    this.scaleLine1.setAttribute("y1", yStart);
-    this.scaleLine1.setAttribute("x2", left);
-    this.scaleLine1.setAttribute("y2", yEnd);
-    this.scaleLine1.setAttribute("style", "stroke:rgb(0,0,0);stroke-width:" + lineWidth);
-
-    this.scaleLine2.setAttribute("x1", right);
-    this.scaleLine2.setAttribute("y1", yStart);
-    this.scaleLine2.setAttribute("x2", right);
-    this.scaleLine2.setAttribute("y2", yEnd);
-    this.scaleLine2.setAttribute("style", "stroke:rgb(0,0,0);stroke-width:" + lineWidth);
-
-    this.scaleBackground.setAttribute("y", yStart);
-    this.scaleBackground.setAttribute("x", left);
-    this.scaleBackground.setAttribute("height", yEnd - yStart);
-    this.scaleBackground.setAttribute("width", right-left);
-    this.scaleBackground.setAttribute("style", "fill:#" + this.config.scale.backgroundColor + ";");
-    this.scaleBackground.setAttribute("class", "js_timeline_entry");
-}
 
 //currently one tick per year
-VisualisationVerticalBigBar.prototype.updateTicks = function () {
+VisualisationVerticalMinimal.prototype.updateTicks = function () {
     "use strict";
 
     var height = this.getHeightForEntry();
@@ -211,7 +160,7 @@ VisualisationVerticalBigBar.prototype.updateTicks = function () {
         line.setAttribute("x2", right);
         line.setAttribute("y2", yPos);
 
-        line.setAttribute("style", "stroke:rgb(0,0,0);stroke-width:" + 2);
+        line.setAttribute("style", "stroke:rgb(0,0,0);stroke-width:" + 1);
 
         this.tickSvgs.push(line);
         this.masterSvg.appendChild(line);
@@ -233,7 +182,7 @@ VisualisationVerticalBigBar.prototype.updateTicks = function () {
     }
 }
 
-VisualisationVerticalBigBar.prototype.updateStartYearAndNowString = function () {
+VisualisationVerticalMinimal.prototype.updateStartYear = function () {
     "use strict";
     if (this.labelSvgs) {
         for (var index in this.labelSvgs) {
@@ -246,20 +195,6 @@ VisualisationVerticalBigBar.prototype.updateStartYearAndNowString = function () 
     var left = this.getCenter() - 15;
     var fontSize = this.config.scale.fontSize;
     var fontOffset = fontSize * 0.3;
-
-    if (this.config.drawToday) {
-        var todaySvg = document.createElementNS("http://www.w3.org/2000/svg", "text");
-        todaySvg.setAttribute("x", left);
-        todaySvg.setAttribute("y", fontOffset * 2.7);
-        todaySvg.setAttribute("fill", "black");
-        todaySvg.setAttribute("font-size", fontSize);
-
-        var todayString = document.createTextNode("today");
-        todaySvg.appendChild(todayString);
-        this.labelSvgs.push(todaySvg);
-        this.masterSvg.appendChild(todaySvg);
-
-    }
 
     if (this.config.drawBaseLineYear) {
         var baseLineYearSvg = document.createElementNS("http://www.w3.org/2000/svg", "text");
@@ -276,38 +211,7 @@ VisualisationVerticalBigBar.prototype.updateStartYearAndNowString = function () 
     }
 }
 
-VisualisationVerticalBigBar.prototype.updateArrowHead = function () {
-    "use strict";
-    var topOffset = this.getTopOffsetForScale();
-    var lineWidth = 2;//this.config.scale.lineWidth;
-
-    var margin = this.config.scale.margin;
-    var width = this.getWidth();
-    var left = 1;
-    var right = width - 1;
-    var center = this.getCenter();
-
-    var arrowHeight = this.config.scale.arrowHeadHeight;
-
-    var xStart = left;
-    var yStart = arrowHeight + topOffset + 3;
-
-    var xCenter = center;
-    var yCenter = topOffset;
-
-    var xEnd = right;
-    var yEnd = arrowHeight + topOffset + 5;
-
-    if (!this.arrowHeadSvg) {
-        this.arrowHeadSvg = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
-        this.masterSvg.appendChild(this.arrowHeadSvg);
-    }
-
-    this.arrowHeadSvg.setAttribute("points", xStart + "," + yStart + " " + xCenter + "," + yCenter + " " + xEnd + "," + yEnd);
-    this.arrowHeadSvg.setAttribute("style", "fill:none;stroke:black;stroke-width:" + lineWidth);
-}
-
-VisualisationVerticalBigBar.prototype.updateEntries = function () {
+VisualisationVerticalMinimal.prototype.updateEntries = function () {
     var allEntries = this.timeline.getTimelineEntries();
     for (var index in this.timelineEntryVisualisationMaps) {
         this.masterSvg.removeChild(this.timelineEntryVisualisationMaps[index]);
@@ -319,7 +223,7 @@ VisualisationVerticalBigBar.prototype.updateEntries = function () {
     }
 }
 
-VisualisationVerticalBigBar.prototype.getShapeForTimelineEntry = function (timelineEntry) {
+VisualisationVerticalMinimal.prototype.getShapeForTimelineEntry = function (timelineEntry) {
     //decide level
     var takenLevels = this.timeline.getTakenLevelsInTimeRange(timelineEntry.fromDate, timelineEntry.toDate, timelineEntry);
     var newLevel = 0;
@@ -355,8 +259,8 @@ VisualisationVerticalBigBar.prototype.getShapeForTimelineEntry = function (timel
     shape.setAttribute("x", left);
     shape.setAttribute("height", height);
     shape.setAttribute("width", 5);
-    shape.setAttribute("style", "fill:#" + color + ";stroke:black;stroke-width:1;pointer-events:all;");
-    shape.setAttribute("class", "js_timeline_entry");
+    shape.setAttribute("style", "fill:#" + color + ";pointer-events:all;");
+    shape.setAttribute("class", "js_timeline_entry_"+this.id);
 
     shape.onmouseover = function (event) {
         timelineEntry.tooltip = new Tooltip(event, timelineEntry.title);

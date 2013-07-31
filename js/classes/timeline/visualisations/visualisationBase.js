@@ -20,13 +20,7 @@ function VisualisationBase(_timeline, _htmlElement, _config) {
     this.masterSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     this.masterSvg.setAttribute("style", "position:absolute;left:0px;top:0px;width:100%;height:100%;");
 
-    //set hover style
-    var style = document.createElement("style");
-    style.setAttribute("type", "text/css");
-    var styleText = document.createTextNode(".js_timeline_entry.hover{opacity:0.5;}");
-    style.appendChild(styleText);
-
-    this.masterSvg.appendChild(style);
+    this.id = new Date().getTime();
 
     this.htmlElement.appendChild(this.masterSvg);
 }
