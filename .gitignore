@@ -4,3 +4,4 @@ js/timeline_big.js
 unitTest.html
 timelines/
 .idea/
+node_modules/

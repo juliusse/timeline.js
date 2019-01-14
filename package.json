@@ -1,0 +1,25 @@
+{
+  "name": "timeline.js",
+  "version": "1.0.0",
+  "description": "timeline.js ===========",
+  "main": "js/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start:dev": "webpack-dev-server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/juliusse/timeline.js.git"
+  },
+  "author": "Julius Seltenheim",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/juliusse/timeline.js/issues"
+  },
+  "homepage": "https://github.com/juliusse/timeline.js#readme",
+  "devDependencies": {
+    "webpack": "4.8.3",
+    "webpack-cli": "2.1.3",
+    "webpack-dev-server": "3.1.4"
+  }
+}
