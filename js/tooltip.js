@@ -7,13 +7,9 @@ Author:
     When another instance is created, the old one will be destroyed
 */
 
-let jsTimelineTooltip = null;
-
 class Tooltip {
     constructor(event, text) {
         //check if tooltip exists
-        Tooltip.destroyExistingTooltip();
-        jsTimelineTooltip = this;
         this.div = this.createDiv();
 
         var x = event.pageX;
@@ -41,13 +37,7 @@ class Tooltip {
     }
 
     destroy() {
-        Tooltip.destroyExistingTooltip();
-    }
-    static destroyExistingTooltip() {
-        if (jsTimelineTooltip != null) {
-            document.getElementsByTagName("body")[0].removeChild(jsTimelineTooltip.div);
-        }
-        jsTimelineTooltip = null;
+        document.getElementsByTagName("body")[0].removeChild(this.div);
     }
 }
 

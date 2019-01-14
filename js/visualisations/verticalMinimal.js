@@ -1,5 +1,4 @@
 ﻿const { Visualisation }= require('./visualisation');
-const Tooltip = require('../tooltip');
 
 var defaultConfig = {};
 defaultConfig.scale = {};
@@ -262,28 +261,10 @@ class VerticalMinimal extends Visualisation {
         shape.setAttribute("style", "fill:#" + color + ";pointer-events:all;");
         shape.setAttribute("class", "js_timeline_entry_" + this.id);
 
-        shape.onmouseover = function (event) {
-            timelineEntry.tooltip = new Tooltip(event, timelineEntry.title);
-            shape.classList.add("hover");
-
-        };
-        shape.onmouseout = function () {
-            timelineEntry.tooltip.destroy();
-            shape.classList.remove("hover");
-        }
-
         return shape;
     }
 
 
-}
-
-function addEvent(ele, type, func) {
-    if (ele.addEventListener) {
-        ele.addEventListener(type, func, false);
-    } else if (ele.attachEvent) {
-        ele.attachEvent("on" + type, func);
-    }
 }
 
 module.exports = VerticalMinimal;

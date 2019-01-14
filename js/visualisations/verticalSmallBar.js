@@ -1,5 +1,4 @@
 ﻿const { Visualisation }= require('./visualisation');
-const Tooltip = require('../tooltip');
 
 var defaultConfig = {};
 defaultConfig.scale = {};
@@ -335,16 +334,6 @@ class VerticalSmallBar extends Visualisation {
         shape.setAttribute("width", 5);
         shape.setAttribute("style", "fill:#" + color + ";stroke:black;stroke-width:1;pointer-events:all;");
         shape.setAttribute("class", "js_timeline_entry");
-
-        shape.onmouseover = function (event) {
-            timelineEntry.tooltip = new Tooltip(event, timelineEntry.title);
-            shape.classList.add("hover");
-
-        };
-        shape.onmouseout = function () {
-            timelineEntry.tooltip.destroy();
-            shape.classList.remove("hover");
-        }
 
         return shape;
     }

@@ -5,6 +5,10 @@ Author:
     
 */
 
+const _ = require('lodash');
+const $ = require('jquery');
+const Tooltip = require('../tooltip');
+
 class Visualisation {
     constructor(timeline, htmlElement, config) {
         this.timeline = timeline;
@@ -58,6 +62,16 @@ class Visualisation {
      */
     onNewTimelineEntry(timelineEntry) {
         var shape = this.getShapeForTimelineEntry(timelineEntry);
+
+        $(shape).on('mouseover', (event) => {
+            timelineEntry.tooltip = new Tooltip(event, timelineEntry.title);
+            shape.classList.add("hover");
+        });
+        shape.onmouseout = function () {
+            timelineEntry.tooltip.destroy();
+            shape.classList.remove("hover");
+        };
+
         this.timelineEntryVisualisationMaps[timelineEntry.getHash()] = shape;
 
         for (var index in timelineEntry.highlightingHtmlElements) {
@@ -68,25 +82,10 @@ class Visualisation {
     }
 
     onHTMLElementToTriggerHoverAdded(timelineEntry, htmlElement) {
-        var shape = this.timelineEntryVisualisationMaps[timelineEntry.getHash()];
-        addEvent(htmlElement, "mouseover", function (event) {
-            shape.classList.add("hover");
-
-        });
-
-        addEvent(htmlElement, "mouseout", function (event) {
-            shape.classList.remove("hover");
-
-        });
+        const shape = this.timelineEntryVisualisationMaps[timelineEntry.getHash()];
+        $(htmlElement).on('mouseover', () => shape.classList.add("hover"));
+        $(htmlElement).on('mouseout', () => shape.classList.remove("hover"));
     }
 }
 
-function addEvent(ele, type, func) {
-    if (ele.addEventListener) {
-        ele.addEventListener(type, func, false);
-    } else if (ele.attachEvent) {
-        ele.attachEvent("on" + type, func);
-    }
-}
-
-module.exports = { Visualisation };
+module.exports = {Visualisation};
