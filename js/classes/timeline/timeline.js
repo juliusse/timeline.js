@@ -10,7 +10,8 @@ window.Timeline = Timeline;
 Timeline.Visualisations = {
     VerticalSmallBar: 1,
     VerticalBigBar: 2,
-    VerticalMinimal: 3
+    VerticalMinimal: 3,
+    VerticalGroupedByColor: 4,
 }
 
 
@@ -39,6 +40,8 @@ Timeline.prototype.addVisualisation = function (_visualisationType, _htmlElement
         vis = new VisualisationVerticalBigBar(this, _htmlElement, _visualisationConfig);
     } else if (_visualisationType == Timeline.Visualisations.VerticalMinimal) {
         vis = new VisualisationVerticalMinimal(this, _htmlElement, _visualisationConfig);
+    } else if (_visualisationType == Timeline.Visualisations.VerticalGroupedByColor) {
+        vis = new VisualisationVerticalGroupedByColor(this, _htmlElement, _visualisationConfig);
     }
 
     if (vis != null) {
