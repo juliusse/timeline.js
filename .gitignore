@@ -1,7 +1,3 @@
-js/timeline.js
-js/timeline_compiled.js
-js/timeline_big.js
-unitTest.html
 timelines/
 .idea/
 node_modules/
