@@ -5,33 +5,30 @@ Author:
     
 */
 
-//TimelineEntry stuff
+class TimelineEntry {
 
-
-function TimelineEntry(_title, _fromDate, _toDate, _color) {
-    this.title = _title;
-    this.fromDate = _fromDate;
-    this.toDate = _toDate;
-    this.color = _color;
-    this.level = 0;
-    this.listeners = [];
-    this.highlightingHtmlElements = [];
-}
-
-TimelineEntry.prototype.getHash = function () {
-    return this.title + "_" + this.fromDate.getTime() + "_" + this.toDate.getTime();
-}
-
-TimelineEntry.prototype.addListener = function (listener) {
-    this.listeners.push(listener);
-}
-
-TimelineEntry.prototype.addHTMLElementToTriggerHover = function (hTMLElement) {
-    this.highlightingHtmlElements.push(hTMLElement);
-    for (var index in this.listeners) {
-        this.listeners[index].onHTMLElementToTriggerHoverAdded(this, hTMLElement);
+    constructor(title, fromDate, toDate, color) {
+        this.title = title;
+        this.fromDate = fromDate;
+        this.toDate = toDate;
+        this.color = color;
+        this.level = 0;
+        this.listeners = [];
+        this.highlightingHtmlElements = [];
     }
 
+    getHash() {
+        return this.title + "_" + this.fromDate.getTime() + "_" + this.toDate.getTime();
+    }
+
+    addListener(listener) {
+        this.listeners.push(listener);
+    }
+
+    addHTMLElementToTriggerHover(hTMLElement) {
+        this.highlightingHtmlElements.push(hTMLElement);
+        this.listeners.forEach(l => l.onHTMLElementToTriggerHoverAdded(this, hTMLElement));
+    }
 }
 
 module.exports = TimelineEntry;

@@ -366,7 +366,7 @@ VerticalGroupedByColor.prototype.getShapeForTimelineEntry = function (timelineEn
 
     };
     shape.onmouseout = function () {
-        timelineEntry.tooltip.destroyExistingTooltip();
+        timelineEntry.tooltip.destroy();
         shape.classList.remove("hover");
     }
 

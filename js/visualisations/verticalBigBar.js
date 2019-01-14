@@ -362,7 +362,7 @@ class VerticalBigBar extends Visualisation {
 
         };
         shape.onmouseout = function () {
-            timelineEntry.tooltip.destroyExistingTooltip();
+            timelineEntry.tooltip.destroy();
             shape.classList.remove("hover");
         }
 
