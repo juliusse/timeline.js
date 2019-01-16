@@ -1,33 +1,11 @@
-﻿const { Visualisation }= require('./visualisation');
-
-const localDefaultConfig = {};
-localDefaultConfig.scale = {};
-localDefaultConfig.scale.lineWidth = 3;
-localDefaultConfig.scale.margin = 5;
-localDefaultConfig.scale.backgroundColor = "ffffff";
-localDefaultConfig.scale.fontSize = 15;
-localDefaultConfig.scale.arrowHeadHeight = 13;
-localDefaultConfig.scale.numbersMarginRight = 20;
-localDefaultConfig.drawToday = true;
-localDefaultConfig.drawBaseLineYear = true;
-localDefaultConfig.drawTickLabels = true;
-localDefaultConfig.entries = {};
-localDefaultConfig.entries.colors = ["f7c6c7", "fad8c7", "fef2c0", "bfe5bf", "bfdadc", "c7def8", "bfd4f2", "d4c5f9"];
-
+﻿const {Visualisation} = require('./visualisation');
 
 class VerticalGroupedByColor extends Visualisation {
     constructor(timeline, htmlElement, config) {
-        super(timeline, htmlElement, config || localDefaultConfig);
+        super(timeline, htmlElement, config);
 
-        //set hover style
-        var style = document.createElement("style");
-        style.setAttribute("type", "text/css");
-        var styleText = document.createTextNode(".js_timeline_entry.hover{opacity:0.5;} .js_timeline_entry{opacity:1;}");
-        style.appendChild(styleText);
+        this.htmlElement.classList.add('by-color');
 
-        this.masterSvg.appendChild(style);
-
-        this.lastColor = 0;
         this.colorToLevelMap = {};
         this.nextLevel = 1;
         this.repaint();
@@ -47,17 +25,6 @@ class VerticalGroupedByColor extends Visualisation {
 
     getCenter() {
         return this.getWidth() / 2;
-    }
-
-    getNextColor() {
-        var colorIndex = this.lastColor + 1;
-
-        if (this.config.entries.colors.length == colorIndex)
-            colorIndex = 0;
-
-        this.lastColor = colorIndex;
-
-        return this.config.entries.colors[colorIndex];
     }
 
     getPosForDate(date) {
@@ -357,7 +324,7 @@ class VerticalGroupedByColor extends Visualisation {
         shape.setAttribute("height", height);
         shape.setAttribute("width", 10);
         shape.setAttribute("style", "fill:#" + color + ";stroke:black;stroke-width:1;pointer-events:all;");
-        shape.setAttribute("class", "js_timeline_entry");
+        shape.setAttribute("class", "entry");
 
         return shape;
     }

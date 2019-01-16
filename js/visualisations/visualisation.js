@@ -9,12 +9,34 @@ const _ = require('lodash');
 const $ = require('jquery');
 const Tooltip = require('../tooltip');
 
+const defaultConfig = {};
+defaultConfig.scale = {};
+defaultConfig.scale.lineWidth = 3;
+defaultConfig.scale.margin = 5;
+defaultConfig.scale.backgroundColor = "ffffff";
+defaultConfig.scale.fontSize = 15;
+defaultConfig.scale.arrowHeadHeight = 13;
+defaultConfig.scale.arrowHeadWidth = 20;
+defaultConfig.scale.numbersMarginRight = 20;
+defaultConfig.drawToday = true;
+defaultConfig.drawBaseLineYear = true;
+defaultConfig.drawTickLabels = true;
+defaultConfig.entries = {};
+defaultConfig.entries.colors = ["f7c6c7", "fad8c7", "fef2c0", "bfe5bf", "bfdadc", "c7def8", "bfd4f2", "d4c5f9"];
+
+require('./visualisation.less');
+
 class Visualisation {
     constructor(timeline, htmlElement, config) {
         this.timeline = timeline;
         this.htmlElement = htmlElement;
         this.timelineEntryVisualisationMaps = {};
-        this.config = config == null ? {} : config;
+        this.config = _.defaults(config, defaultConfig);
+
+        this.colors = this.config.entries.colors;
+        this.nextColorIndex = 1;
+
+        this.htmlElement.classList.add('timelinejs');
 
         //make sure element is empty
         while (this.htmlElement.firstChild) {
@@ -22,9 +44,7 @@ class Visualisation {
         }
 
         this.masterSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-        this.masterSvg.setAttribute("style", "position:absolute;left:0px;top:0px;width:100%;height:100%;");
-
-        this.id = new Date().getTime();
+        this.masterSvg.classList.add('master');
 
         this.htmlElement.appendChild(this.masterSvg);
     }
@@ -43,6 +63,13 @@ class Visualisation {
 
     getHTMLElement() {
         return this.htmlElement;
+    }
+
+    getNextColor() {
+        const color = this.colors[this.nextColorIndex];
+        this.nextColorIndex = (this.nextColorIndex + 1) %  this.colors.length;
+
+        return color;
     }
 
     /*

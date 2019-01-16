@@ -25,9 +25,9 @@ class TimelineEntry {
         this.listeners.push(listener);
     }
 
-    addHTMLElementToTriggerHover(hTMLElement) {
-        this.highlightingHtmlElements.push(hTMLElement);
-        this.listeners.forEach(l => l.onHTMLElementToTriggerHoverAdded(this, hTMLElement));
+    addHTMLElementToTriggerHover(htmlElement) {
+        this.highlightingHtmlElements.push(htmlElement);
+        this.listeners.forEach(l => l.onHTMLElementToTriggerHoverAdded(this, htmlElement));
     }
 }
 

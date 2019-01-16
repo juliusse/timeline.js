@@ -1,30 +1,11 @@
 ﻿const { Visualisation }= require('./visualisation');
 
-var defaultConfig = {};
-defaultConfig.scale = {};
-defaultConfig.scale.lineWidth = 3;
-defaultConfig.scale.fontSize = 15;
-defaultConfig.scale.arrowHeadHeight = 13;
-defaultConfig.scale.arrowHeadWidth = 20;
-defaultConfig.drawToday = true;
-defaultConfig.drawBaseLineYear = true;
-defaultConfig.drawTickLabels = true;
-defaultConfig.entries = {};
-defaultConfig.entries.colors = ["f7c6c7", "fad8c7", "fef2c0", "bfe5bf", "bfdadc", "c7def8", "bfd4f2", "d4c5f9"];
-
 class VerticalSmallBar extends Visualisation {
-    constructor(timeline, _htmlElement, _config) {
-        super(timeline, _htmlElement, !_config ? defaultConfig : _config);
+    constructor(timeline, htmlElement, config) {
+        super(timeline, htmlElement, config);
 
-        //set hover style
-        var style = document.createElement("style");
-        style.setAttribute("type", "text/css");
-        var styleText = document.createTextNode(".js_timeline_entry.hover{opacity:0.5;} .js_timeline_entry{opacity:1;}");
-        style.appendChild(styleText);
+        this.htmlElement.classList.add('small-bar');
 
-        this.masterSvg.appendChild(style);
-
-        this.lastColor = 0;
         this.repaint();
     }
 
@@ -43,17 +24,6 @@ class VerticalSmallBar extends Visualisation {
         var realCenter = this.getWidth() / 2;
         var usedCenter = realCenter * 0.9;
         return usedCenter;
-    }
-
-    getNextColor() {
-        var colorIndex = this.lastColor + 1;
-
-        if (this.config.entries.colors.length == colorIndex)
-            colorIndex = 0;
-
-        this.lastColor = colorIndex;
-
-        return this.config.entries.colors[colorIndex];
     }
 
     getPosForDate(date) {
@@ -333,17 +303,9 @@ class VerticalSmallBar extends Visualisation {
         shape.setAttribute("height", height);
         shape.setAttribute("width", 5);
         shape.setAttribute("style", "fill:#" + color + ";stroke:black;stroke-width:1;pointer-events:all;");
-        shape.setAttribute("class", "js_timeline_entry");
+        shape.setAttribute("class", "entry");
 
         return shape;
-    }
-}
-
-function addEvent(ele, type, func) {
-    if (ele.addEventListener) {
-        ele.addEventListener(type, func, false);
-    } else if (ele.attachEvent) {
-        ele.attachEvent("on" + type, func);
     }
 }
 

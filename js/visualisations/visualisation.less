@@ -1,0 +1,28 @@
+.timelinejs {
+  .master {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+  }
+  &.big-bar,
+  &.small-bar,
+  &.by-color {
+
+    .entry {
+      opacity: 1;
+
+      &.hover {
+        opacity: 0.5;
+      }
+    }
+  }
+
+  &.minimal {
+    .entry.hover {
+      stroke-width: 1px;
+      stroke: black;
+    }
+  }
+}

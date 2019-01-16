@@ -1,32 +1,11 @@
 ﻿const { Visualisation }= require('./visualisation');
 
-var defaultConfig = {};
-defaultConfig.scale = {};
-defaultConfig.scale.lineWidth = 3;
-defaultConfig.scale.margin = 5;
-defaultConfig.scale.backgroundColor = "ffffff";
-defaultConfig.scale.fontSize = 15;
-defaultConfig.scale.numbersMarginRight = 20;
-defaultConfig.drawBaseLineYear = true;
-defaultConfig.drawTickLabels = true;
-defaultConfig.entries = {};
-defaultConfig.entries.colors = ["f7c6c7", "fad8c7", "fef2c0", "bfe5bf", "bfdadc", "c7def8", "bfd4f2", "d4c5f9"];
-
 class VerticalMinimal extends Visualisation {
+    constructor(timeline, htmlElement, config) {
+        super(timeline, htmlElement, config);
 
+        this.htmlElement.classList.add('minimal');
 
-    constructor(timeline, _htmlElement, _config) {
-        super(timeline, _htmlElement, !_config ? defaultConfig : _config);
-
-        //set hover style
-        var style = document.createElement("style");
-        style.setAttribute("type", "text/css");
-        var styleText = document.createTextNode(".js_timeline_entry_" + this.id + ".hover{stroke-width:1;stroke:black;}");
-        style.appendChild(styleText);
-
-        this.masterSvg.appendChild(style);
-
-        this.lastColor = 0;
         this.repaint();
     }
 
@@ -41,17 +20,6 @@ class VerticalMinimal extends Visualisation {
 
     getCenter() {
         return this.getWidth() / 2;
-    }
-
-    getNextColor() {
-        var colorIndex = this.lastColor + 1;
-
-        if (this.config.entries.colors.length == colorIndex)
-            colorIndex = 0;
-
-        this.lastColor = colorIndex;
-
-        return this.config.entries.colors[colorIndex];
     }
 
     getPosForDate(date) {
@@ -122,7 +90,7 @@ class VerticalMinimal extends Visualisation {
 
 //currently one tick per year
     updateTicks() {
-        "use strict";
+        'use strict';
 
         var height = this.getHeightForEntry();
         var offsetTop = this.getTopOffsetForEntry();
@@ -152,28 +120,28 @@ class VerticalMinimal extends Visualisation {
 
         for (var i = 0; i < ticks; i += 1) {
             var yPos = offsetTop + height - i * stepSize;
-            var line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+            var line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
 
-            line.setAttribute("x1", left);
-            line.setAttribute("y1", yPos);
+            line.setAttribute('x1', left);
+            line.setAttribute('y1', yPos);
 
-            line.setAttribute("x2", right);
-            line.setAttribute("y2", yPos);
+            line.setAttribute('x2', right);
+            line.setAttribute('y2', yPos);
 
-            line.setAttribute("style", "stroke:rgb(0,0,0);stroke-width:" + 1);
+            line.setAttribute('style', 'stroke:rgb(0,0,0);stroke-width:' + 1);
 
             this.tickSvgs.push(line);
             this.masterSvg.appendChild(line);
 
             if (withLabels && i != 0) {
-                var text = document.createElementNS("http://www.w3.org/2000/svg", "text");
-                text.setAttribute("x", right - this.config.scale.numbersMarginRight);
-                text.setAttribute("y", yPos + 10);
-                text.setAttribute("fill", "black");
-                text.setAttribute("font-size", "10");
+                var text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                text.setAttribute('x', right - this.config.scale.numbersMarginRight);
+                text.setAttribute('y', yPos + 10);
+                text.setAttribute('fill', 'black');
+                text.setAttribute('font-size', '10');
 
 
-                var str = document.createTextNode((this.timeline.getFromYear() + i + ""));
+                var str = document.createTextNode((this.timeline.getFromYear() + i + ''));
                 text.appendChild(str);
 
                 this.tickSvgs.push(text);
@@ -183,7 +151,7 @@ class VerticalMinimal extends Visualisation {
     }
 
     updateStartYear() {
-        "use strict";
+        'use strict';
         if (this.labelSvgs) {
             for (var index in this.labelSvgs) {
                 this.masterSvg.removeChild(this.labelSvgs[index]);
@@ -197,11 +165,11 @@ class VerticalMinimal extends Visualisation {
         var fontOffset = fontSize * 0.3;
 
         if (this.config.drawBaseLineYear) {
-            var baseLineYearSvg = document.createElementNS("http://www.w3.org/2000/svg", "text");
-            baseLineYearSvg.setAttribute("x", left);
-            baseLineYearSvg.setAttribute("y", this.getHeight() - fontOffset);
-            baseLineYearSvg.setAttribute("fill", "black");
-            baseLineYearSvg.setAttribute("font-size", fontSize);
+            var baseLineYearSvg = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            baseLineYearSvg.setAttribute('x', left);
+            baseLineYearSvg.setAttribute('y', this.getHeight() - fontOffset);
+            baseLineYearSvg.setAttribute('fill', 'black');
+            baseLineYearSvg.setAttribute('font-size', fontSize);
 
             var baseLineYearString = document.createTextNode(this.timeline.getFromYear());
             baseLineYearSvg.appendChild(baseLineYearString);
@@ -253,13 +221,13 @@ class VerticalMinimal extends Visualisation {
         left = left + level * 6;
 
 
-        var shape = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-        shape.setAttribute("y", yHigh);
-        shape.setAttribute("x", left);
-        shape.setAttribute("height", height);
-        shape.setAttribute("width", 5);
-        shape.setAttribute("style", "fill:#" + color + ";pointer-events:all;");
-        shape.setAttribute("class", "js_timeline_entry_" + this.id);
+        var shape = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+        shape.setAttribute('y', yHigh);
+        shape.setAttribute('x', left);
+        shape.setAttribute('height', height);
+        shape.setAttribute('width', 5);
+        shape.setAttribute('style', 'fill:#' + color + ';pointer-events:all;');
+        shape.setAttribute('class', 'entry');
 
         return shape;
     }
