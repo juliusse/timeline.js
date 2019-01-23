@@ -1,4 +1,4 @@
-﻿const { Visualisation }= require('./visualisation');
+﻿const {Visualisation} = require('./visualisation');
 
 class VerticalSmallBar extends Visualisation {
     constructor(timeline, htmlElement, config) {
@@ -270,19 +270,20 @@ class VerticalSmallBar extends Visualisation {
         const level = this.levelManager.getLevelFor(timelineEntry);
         const color = timelineEntry.color;
 
+        const entryWidth = this.config.entry.width;
+
         var yLow = this.getPosForDate(timelineEntry.fromDate);
         var yHigh = this.getPosForDate(timelineEntry.toDate);
         var height = yLow - yHigh;
 
-        var width = this.getWidth();
         var timelineCenter = this.getCenter();
 
         var left = 0;
-        if (level % 2 == 0) { //on right side
-            left = timelineCenter + 1 + 6 * (level / 2);
+        if (level % 2 === 0) { //on right side
+            left = timelineCenter + 1 + (entryWidth + 1) * (level / 2);
 
         } else { //on left side
-            left = timelineCenter - 7 - 6 * ((level - 1) / 2);
+            left = timelineCenter - (entryWidth + 1) - 6 * ((level - 1) / 2);
         }
 
 
@@ -290,7 +291,7 @@ class VerticalSmallBar extends Visualisation {
         shape.setAttribute("y", yHigh);
         shape.setAttribute("x", left);
         shape.setAttribute("height", height);
-        shape.setAttribute("width", 5);
+        shape.setAttribute("width", entryWidth);
         shape.setAttribute("style", "fill:#" + color + ";stroke:black;stroke-width:1;pointer-events:all;");
         shape.setAttribute("class", "entry");
 

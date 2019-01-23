@@ -289,6 +289,8 @@ class VerticalBigBar extends Visualisation {
         const level = this.levelManager.getLevelFor(timelineEntry);
         const color = timelineEntry.color;
 
+        const entryWidth = this.config.entry.width;
+
         //decide position
         //y
         var yLow = this.getPosForDate(timelineEntry.fromDate);
@@ -298,16 +300,15 @@ class VerticalBigBar extends Visualisation {
         //x
         var lineWidth = this.config.scale.lineWidth;
         var margin = this.config.scale.margin;
-        var width = this.getWidth();
         var left = margin + lineWidth;
-        left = left + level * 6;
+        left = left + level * (entryWidth + 1);
 
 
         var shape = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
         shape.setAttribute('y', yHigh);
         shape.setAttribute('x', left);
         shape.setAttribute('height', height);
-        shape.setAttribute('width', 5);
+        shape.setAttribute('width', entryWidth);
         shape.setAttribute('style', 'fill:#' + color + ';stroke:black;stroke-width:1;pointer-events:all;');
         shape.setAttribute('class', 'entry');
 

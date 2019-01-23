@@ -16,7 +16,10 @@ const Level = {
 };
 
 const defaultConfig = {
-    level: Level.ORDER_BY_TIME
+    level: Level.ORDER_BY_TIME,
+    entry: {
+        width: 5
+    }
 };
 
 defaultConfig.scale = {};
