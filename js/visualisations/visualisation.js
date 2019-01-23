@@ -8,8 +8,17 @@ Author:
 const _ = require('lodash');
 const $ = require('jquery');
 const Tooltip = require('../tooltip');
+const { LevelManagerColor, LevelManagerTime } = require('./level-manager');
 
-const defaultConfig = {};
+const Level = {
+    ORDER_BY_TIME: 1,
+    ORDER_BY_COLOR: 2
+};
+
+const defaultConfig = {
+    level: Level.ORDER_BY_TIME
+};
+
 defaultConfig.scale = {};
 defaultConfig.scale.lineWidth = 3;
 defaultConfig.scale.margin = 5;
@@ -35,6 +44,15 @@ class Visualisation {
 
         this.colors = this.config.entries.colors;
         this.nextColorIndex = 1;
+
+        switch (this.config.level) {
+            case Visualisation.Level.ORDER_BY_TIME:
+                this.levelManager = new LevelManagerTime();
+                break;
+            case Visualisation.Level.ORDER_BY_COLOR:
+                this.levelManager = new LevelManagerColor();
+                break;
+        }
 
         this.htmlElement.classList.add('timelinejs');
 
@@ -67,7 +85,7 @@ class Visualisation {
 
     getNextColor() {
         const color = this.colors[this.nextColorIndex];
-        this.nextColorIndex = (this.nextColorIndex + 1) %  this.colors.length;
+        this.nextColorIndex = (this.nextColorIndex + 1) % this.colors.length;
 
         return color;
     }
@@ -114,5 +132,7 @@ class Visualisation {
         $(htmlElement).on('mouseout', () => shape.classList.remove("hover"));
     }
 }
+
+Visualisation.Level = Level;
 
 module.exports = {Visualisation};

@@ -268,18 +268,12 @@ class VerticalSmallBar extends Visualisation {
 
     getShapeForTimelineEntry(timelineEntry) {
         //decide level
-        var takenLevels = this.timeline.getTakenLevelsInTimeRange(timelineEntry.fromDate, timelineEntry.toDate, timelineEntry);
+        const level = this.levelManager.getLevelFor(timelineEntry);
+
         //decide color
         if (!timelineEntry.color)
             timelineEntry.color = this.getNextColor();
         var color = timelineEntry.color;
-        var newLevel = 0;
-        while (takenLevels.indexOf(newLevel) != -1) {
-            newLevel += 1;
-        }
-
-        var level = newLevel;
-        timelineEntry.level = newLevel;
 
         var yLow = this.getPosForDate(timelineEntry.fromDate);
         var yHigh = this.getPosForDate(timelineEntry.toDate);
@@ -289,11 +283,11 @@ class VerticalSmallBar extends Visualisation {
         var timelineCenter = this.getCenter();
 
         var left = 0;
-        if (newLevel % 2 == 0) { //on right side
-            left = timelineCenter + 1 + 6 * (newLevel / 2);
+        if (level % 2 == 0) { //on right side
+            left = timelineCenter + 1 + 6 * (level / 2);
 
         } else { //on left side
-            left = timelineCenter - 7 - 6 * ((newLevel - 1) / 2);
+            left = timelineCenter - 7 - 6 * ((level - 1) / 2);
         }
 
 

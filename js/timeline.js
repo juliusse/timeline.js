@@ -14,7 +14,6 @@ class Timeline {
             VerticalSmallBar: 1,
             VerticalBigBar: 2,
             VerticalMinimal: 3,
-            VerticalGroupedByColor: 4,
         };
     }
 
@@ -33,8 +32,6 @@ class Timeline {
             vis = new VerticalBigBar(this, _htmlElement, _visualisationConfig);
         } else if (_visualisationType == Timeline.Visualisations.VerticalMinimal) {
             vis = new VerticalMinimal(this, _htmlElement, _visualisationConfig);
-        } else if (_visualisationType == Timeline.Visualisations.VerticalGroupedByColor) {
-            vis = new VerticalGroupedByColor(this, _htmlElement, _visualisationConfig);
         }
 
         if (vis != null) {
@@ -62,29 +59,6 @@ class Timeline {
 
 
 // timelineEntry related
-    getEntriesInTimeRange(fromDate, toDate, excludedEntry) {
-        const resultList = [];
-        this.timelineEntries.forEach((timelineEntry) => {
-            if ((timelineEntry.fromDate >= fromDate && timelineEntry.fromDate <= toDate) ||
-                (timelineEntry.toDate >= fromDate && timelineEntry.toDate <= toDate) ||
-                (timelineEntry.fromDate < fromDate && timelineEntry.toDate > toDate)) {
-                if (timelineEntry != excludedEntry)
-                    resultList.push(timelineEntry);
-            }
-        });
-
-        return resultList;
-    }
-
-    getTakenLevelsInTimeRange(fromDate, toDate, excludedEntry) {
-        const entries = this.getEntriesInTimeRange(fromDate, toDate, excludedEntry);
-        const takenLevels = [];
-
-        entries.forEach((entry) => takenLevels.push(entry.level));
-
-        return _.uniq(takenLevels);
-    }
-
     addTimelineEntry(timelineEntry) {
         this.timelineEntries.push(timelineEntry);
         timelineEntry.addListener(this);

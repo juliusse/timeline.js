@@ -1,6 +1,6 @@
 module.exports = {
+    Visualisation: require('./visualisation').Visualisation,
     VerticalBigBar: require('./verticalBigBar'),
-    VerticalGroupedByColor: require('./verticalGroupedByColor'),
     VerticalMinimal: require('./verticalMinimal'),
     VerticalSmallBar: require('./verticalSmallBar'),
 }

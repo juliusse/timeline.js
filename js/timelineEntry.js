@@ -12,9 +12,12 @@ class TimelineEntry {
         this.fromDate = fromDate;
         this.toDate = toDate;
         this.color = color;
-        this.level = 0;
         this.listeners = [];
         this.highlightingHtmlElements = [];
+    }
+
+    getColor() {
+        return this.color;
     }
 
     getHash() {
