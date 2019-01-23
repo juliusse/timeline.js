@@ -5,8 +5,15 @@ Author:
     
 */
 
-const {VerticalSmallBar, VerticalBigBar, VerticalMinimal, VerticalGroupedByColor} = require('./visualisations/');
 const _ = require('lodash');
+const {VerticalSmallBar, VerticalBigBar, VerticalMinimal} = require('./visualisations/');
+const TimelineEntry = require('./timelineEntry');
+
+const defaultConfig = {
+    entries: {
+        colors: ['fad8c7', 'fef2c0', 'bfe5bf', 'bfdadc', 'c7def8', 'bfd4f2', 'd4c5f9', 'f7c6c7']
+    }
+};
 
 class Timeline {
     static get Visualisations() {
@@ -17,20 +24,25 @@ class Timeline {
         };
     }
 
-    constructor(fromYear) {
+    constructor(fromYear, config) {
+        const _config = _.defaults(config, defaultConfig);
+
         this.fromYear = fromYear;
         this.visualisations = [];
         this.timelineEntries = [];
+
+        this.colors = _config.entries.colors;
+        this.nextColor = 0;
     }
 
 
     addVisualisation(_visualisationType, _htmlElement, _visualisationConfig) {
         let vis = null;
-        if (_visualisationType == Timeline.Visualisations.VerticalSmallBar) {
+        if (_visualisationType === Timeline.Visualisations.VerticalSmallBar) {
             vis = new VerticalSmallBar(this, _htmlElement, _visualisationConfig);
-        } else if (_visualisationType == Timeline.Visualisations.VerticalBigBar) {
+        } else if (_visualisationType === Timeline.Visualisations.VerticalBigBar) {
             vis = new VerticalBigBar(this, _htmlElement, _visualisationConfig);
-        } else if (_visualisationType == Timeline.Visualisations.VerticalMinimal) {
+        } else if (_visualisationType === Timeline.Visualisations.VerticalMinimal) {
             vis = new VerticalMinimal(this, _htmlElement, _visualisationConfig);
         }
 
@@ -39,7 +51,7 @@ class Timeline {
             return vis;
         }
 
-        throw "Unrecognized Visualisation";
+        throw 'Unrecognized Visualisation';
     }
 
     update() {
@@ -59,10 +71,22 @@ class Timeline {
 
 
 // timelineEntry related
-    addTimelineEntry(timelineEntry) {
-        this.timelineEntries.push(timelineEntry);
-        timelineEntry.addListener(this);
-        this.visualisations.forEach(vis => vis.onNewTimelineEntry(timelineEntry));
+    getNextColor() {
+        const color = this.colors[this.nextColor];
+        this.nextColor = (this.nextColor + 1) % this.colors.length;
+
+        return color;
+    }
+
+    addEntry(title, fromDate, toDate, { color = null, hoverSelectors = [] } = {}) {
+        const _color = color || this.getNextColor();
+        const entry = new TimelineEntry(title, fromDate, toDate, _color);
+
+        hoverSelectors.forEach((selector => entry.addHTMLElementToTriggerHover(document.querySelector(selector))));
+
+        this.timelineEntries.push(entry);
+        entry.addListener(this);
+        this.visualisations.forEach(vis => vis.onNewTimelineEntry(entry));
     }
 
     /*

@@ -30,8 +30,6 @@ defaultConfig.scale.numbersMarginRight = 20;
 defaultConfig.drawToday = true;
 defaultConfig.drawBaseLineYear = true;
 defaultConfig.drawTickLabels = true;
-defaultConfig.entries = {};
-defaultConfig.entries.colors = ["f7c6c7", "fad8c7", "fef2c0", "bfe5bf", "bfdadc", "c7def8", "bfd4f2", "d4c5f9"];
 
 require('./visualisation.less');
 
@@ -41,9 +39,6 @@ class Visualisation {
         this.htmlElement = htmlElement;
         this.timelineEntryVisualisationMaps = {};
         this.config = _.defaults(config, defaultConfig);
-
-        this.colors = this.config.entries.colors;
-        this.nextColorIndex = 1;
 
         switch (this.config.level) {
             case Visualisation.Level.ORDER_BY_TIME:
@@ -81,13 +76,6 @@ class Visualisation {
 
     getHTMLElement() {
         return this.htmlElement;
-    }
-
-    getNextColor() {
-        const color = this.colors[this.nextColorIndex];
-        this.nextColorIndex = (this.nextColorIndex + 1) % this.colors.length;
-
-        return color;
     }
 
     /*

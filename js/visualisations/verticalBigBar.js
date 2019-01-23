@@ -286,13 +286,8 @@ class VerticalBigBar extends Visualisation {
     }
 
     getShapeForTimelineEntry(timelineEntry) {
-        //decide level
         const level = this.levelManager.getLevelFor(timelineEntry);
-
-        //decide color
-        if (!timelineEntry.color)
-            timelineEntry.color = this.getNextColor();
-        var color = timelineEntry.color;
+        const color = timelineEntry.color;
 
         //decide position
         //y
