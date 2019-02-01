@@ -22,7 +22,17 @@ const defaultConfig = {
     }
 };
 
-defaultConfig.scale = {};
+defaultConfig.scale = {
+    ticks: {
+        numbers: {
+            marginRight: 20,
+        },
+        line: {
+            margin: 3,
+            stroke: 1,
+        }
+    }
+};
 defaultConfig.scale.lineWidth = 3;
 defaultConfig.scale.margin = 5;
 defaultConfig.scale.backgroundColor = 'ffffff';
@@ -41,7 +51,7 @@ class Visualisation {
         this.timeline = timeline;
         this.htmlElement = htmlElement;
         this.timelineEntryVisualisationMaps = {};
-        this.config = _.defaults(config, defaultConfig);
+        this.config = _.defaultsDeep(config, defaultConfig);
 
         switch (this.config.level) {
             case Visualisation.Level.ORDER_BY_TIME:
