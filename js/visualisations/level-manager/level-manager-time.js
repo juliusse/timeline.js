@@ -17,7 +17,7 @@ class LevelManagerTime extends LevelManager {
 
         const takenLevels = this.getTakenLevelsInTimeRange(timelineEntry.fromDate, timelineEntry.toDate);
         let newLevel = 0;
-        while (takenLevels.indexOf(newLevel) != -1) {
+        while (takenLevels.indexOf(newLevel) !== -1) {
             newLevel += 1;
         }
 

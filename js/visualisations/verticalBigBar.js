@@ -25,30 +25,29 @@ class VerticalBigBar extends Visualisation {
     }
 
     getPosForDate(date) {
-        var startTimestamp = new Date(this.timeline.getFromYear(), 0, 1).getTime();
-        var nowTimestamp = new Date().getTime();
-        var timespan = nowTimestamp - startTimestamp;
+        const startTimestamp = new Date(this.timeline.getFromYear(), 0, 1).getTime();
+        const nowTimestamp = new Date().getTime();
+        const timespan = nowTimestamp - startTimestamp;
 
-        var posOnTimespan = date.getTime() - startTimestamp;
-        var percentFromStart = posOnTimespan / timespan;
+        const posOnTimespan = date.getTime() - startTimestamp;
+        const percentFromStart = posOnTimespan / timespan;
 
-        var offsetTop = this.getTopOffsetForEntry();
-        var maxHeight = this.getHeightForEntry();
+        const offsetTop = this.getTopOffsetForEntry();
+        const maxHeight = this.getHeightForEntry();
 
         if (percentFromStart >= 1) {
             return offsetTop;
         } else if (percentFromStart <= 0) {
             return offsetTop + maxHeight;
         } else {
-            var pos = maxHeight - (maxHeight * percentFromStart) + offsetTop
-            return pos;
+            return maxHeight - (maxHeight * percentFromStart) + offsetTop;
         }
     }
 
 
 // Height and offsets for Entry 
     getTopOffsetForEntry() {
-        var offset = this.getTopOffsetForScale();
+        let offset = this.getTopOffsetForScale();
 
         offset += this.config.scale.arrowHeadHeight;
 
@@ -60,7 +59,7 @@ class VerticalBigBar extends Visualisation {
     }
 
     getHeightForEntry() {
-        var offset = this.getTopOffsetForEntry() + this.getBottomOffsetForScale();
+        const offset = this.getTopOffsetForEntry() + this.getBottomOffsetForScale();
 
         return this.getHeight() - offset;
     }
@@ -68,7 +67,7 @@ class VerticalBigBar extends Visualisation {
 // Height and offsets for Scale
 
     getTopOffsetForScale() {
-        var offset = 0;
+        let offset = 0;
 
         if (this.config.drawToday) {
             offset += this.config.scale.fontSize + 2;
@@ -78,7 +77,7 @@ class VerticalBigBar extends Visualisation {
     }
 
     getBottomOffsetForScale() {
-        var offset = 3;
+        let offset = 3;
 
         if (this.config.drawBaseLineYear) {
             offset += this.config.scale.fontSize + 2;
@@ -87,26 +86,19 @@ class VerticalBigBar extends Visualisation {
         return offset;
     }
 
-    getHeightForScale() {
-        var offset = this.getTopOffsetForScale() + this.getBottomOffsetForScale();
-
-        return this.getHeight() - offset;
-    }
-
     /*
      Draw methods
      Each method keeps track of it's own elements
     */
     updateScale() {
-        'use strict';
-        var yStart = this.getTopOffsetForEntry();
-        var yEnd = this.getHeight() - this.getBottomOffsetForEntry();
+        const yStart = this.getTopOffsetForEntry();
+        const yEnd = this.getHeight() - this.getBottomOffsetForEntry();
 
-        var lineWidth = this.config.scale.lineWidth;
-        var margin = this.config.scale.margin;
-        var width = this.getWidth();
-        var left = margin + lineWidth;
-        var right = width - (margin + lineWidth);
+        const lineWidth = this.config.scale.lineWidth;
+        const margin = this.config.scale.margin;
+        const width = this.getWidth();
+        const left = margin + lineWidth;
+        const right = width - (margin + lineWidth);
 
         if (!this.scaleLine1) {
             this.scaleLine1 = document.createElementNS('http://www.w3.org/2000/svg', 'line');
@@ -139,37 +131,37 @@ class VerticalBigBar extends Visualisation {
 
 //currently one tick per year
     updateTicks() {
-        'use strict';
 
-        var height = this.getHeightForEntry();
-        var offsetTop = this.getTopOffsetForEntry();
-        var withLabels = this.config.drawTickLabels;
 
-        var lineWidth = this.config.scale.lineWidth;
-        var margin = this.config.scale.margin;
-        var width = this.getWidth();
-        var left = margin + lineWidth;
-        var right = width - (margin + lineWidth);
+        const height = this.getHeightForEntry();
+        const offsetTop = this.getTopOffsetForEntry();
+        const withLabels = this.config.drawTickLabels;
+
+        const lineWidth = this.config.scale.lineWidth;
+        const margin = this.config.scale.margin;
+        const width = this.getWidth();
+        const left = margin + lineWidth;
+        const right = width - (margin + lineWidth);
 
         //calculate step size
-        var fromTimestamp = new Date(this.timeline.getFromYear(), 0, 1).getTime();
-        var nowTimestamp = new Date().getTime();
-        var timespan = nowTimestamp - fromTimestamp;
-        var ticks = timespan / (31536000000 + 21600000); //a year + leap
+        const fromTimestamp = new Date(this.timeline.getFromYear(), 0, 1).getTime();
+        const nowTimestamp = new Date().getTime();
+        const timespan = nowTimestamp - fromTimestamp;
+        const ticks = timespan / (31536000000 + 21600000); //a year + leap
 
-        var stepSize = height / ticks;
+        const stepSize = height / ticks;
 
         if (this.tickSvgs) {
-            for (var index in this.tickSvgs) {
+            for (const index in this.tickSvgs) {
                 this.masterSvg.removeChild(this.tickSvgs[index]);
             }
         }
 
         this.tickSvgs = [];
 
-        for (var i = 0; i < ticks; i += 1) {
-            var yPos = offsetTop + height - i * stepSize;
-            var line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        for (let i = 0; i < ticks; i += 1) {
+            const yPos = offsetTop + height - i * stepSize;
+            const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
 
             line.setAttribute('x1', left);
             line.setAttribute('y1', yPos);
@@ -182,15 +174,15 @@ class VerticalBigBar extends Visualisation {
             this.tickSvgs.push(line);
             this.masterSvg.appendChild(line);
 
-            if (withLabels && i != 0) {
-                var text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            if (withLabels && i !== 0) {
+                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
                 text.setAttribute('x', right - this.config.scale.numbersMarginRight);
                 text.setAttribute('y', yPos + 10);
                 text.setAttribute('fill', 'black');
                 text.setAttribute('font-size', '10');
 
 
-                var str = document.createTextNode((this.timeline.getFromYear() + i + ''));
+                const str = document.createTextNode((this.timeline.getFromYear() + i + ''));
                 text.appendChild(str);
 
                 this.tickSvgs.push(text);
@@ -200,27 +192,27 @@ class VerticalBigBar extends Visualisation {
     }
 
     updateStartYearAndNowString() {
-        'use strict';
+
         if (this.labelSvgs) {
-            for (var index in this.labelSvgs) {
+            for (const index in this.labelSvgs) {
                 this.masterSvg.removeChild(this.labelSvgs[index]);
             }
         }
 
         this.labelSvgs = [];
 
-        var left = this.getCenter() - 15;
-        var fontSize = this.config.scale.fontSize;
-        var fontOffset = fontSize * 0.3;
+        const left = this.getCenter() - 15;
+        const fontSize = this.config.scale.fontSize;
+        const fontOffset = fontSize * 0.3;
 
         if (this.config.drawToday) {
-            var todaySvg = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            const todaySvg = document.createElementNS('http://www.w3.org/2000/svg', 'text');
             todaySvg.setAttribute('x', left);
             todaySvg.setAttribute('y', fontOffset * 2.7);
             todaySvg.setAttribute('fill', 'black');
             todaySvg.setAttribute('font-size', fontSize);
 
-            var todayString = document.createTextNode('today');
+            const todayString = document.createTextNode('today');
             todaySvg.appendChild(todayString);
             this.labelSvgs.push(todaySvg);
             this.masterSvg.appendChild(todaySvg);
@@ -228,13 +220,13 @@ class VerticalBigBar extends Visualisation {
         }
 
         if (this.config.drawBaseLineYear) {
-            var baseLineYearSvg = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            const baseLineYearSvg = document.createElementNS('http://www.w3.org/2000/svg', 'text');
             baseLineYearSvg.setAttribute('x', left);
             baseLineYearSvg.setAttribute('y', this.getHeight() - fontOffset);
             baseLineYearSvg.setAttribute('fill', 'black');
             baseLineYearSvg.setAttribute('font-size', fontSize);
 
-            var baseLineYearString = document.createTextNode(this.timeline.getFromYear());
+            const baseLineYearString = document.createTextNode(this.timeline.getFromYear());
             baseLineYearSvg.appendChild(baseLineYearString);
             this.labelSvgs.push(baseLineYearSvg);
             this.masterSvg.appendChild(baseLineYearSvg);
@@ -243,26 +235,25 @@ class VerticalBigBar extends Visualisation {
     }
 
     updateArrowHead() {
-        'use strict';
-        var topOffset = this.getTopOffsetForScale();
-        var lineWidth = 2;//this.config.scale.lineWidth;
 
-        var margin = this.config.scale.margin;
-        var width = this.getWidth();
-        var left = 1;
-        var right = width - 1;
-        var center = this.getCenter();
+        const topOffset = this.getTopOffsetForScale();
+        const lineWidth = 2;//this.config.scale.lineWidth;
 
-        var arrowHeight = this.config.scale.arrowHeadHeight;
+        const width = this.getWidth();
+        const left = 1;
+        const right = width - 1;
+        const center = this.getCenter();
 
-        var xStart = left;
-        var yStart = arrowHeight + topOffset + 3;
+        const arrowHeight = this.config.scale.arrowHeadHeight;
 
-        var xCenter = center;
-        var yCenter = topOffset;
+        const xStart = left;
+        const yStart = arrowHeight + topOffset + 3;
 
-        var xEnd = right;
-        var yEnd = arrowHeight + topOffset + 5;
+        const xCenter = center;
+        const yCenter = topOffset;
+
+        const xEnd = right;
+        const yEnd = arrowHeight + topOffset + 5;
 
         if (!this.arrowHeadSvg) {
             this.arrowHeadSvg = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
@@ -274,15 +265,12 @@ class VerticalBigBar extends Visualisation {
     }
 
     updateEntries() {
-        var allEntries = this.timeline.getTimelineEntries();
-        for (var index in this.timelineEntryVisualisationMaps) {
-            this.masterSvg.removeChild(this.timelineEntryVisualisationMaps[index]);
-        }
+        const allEntries = this.timeline.getTimelineEntries();
 
-        for (var index in allEntries) {
-            var entry = allEntries[index];
-            this.onNewTimelineEntry(entry);
-        }
+        _.values(this.timelineEntryVisualisationMaps)
+            .forEach(shape => this.masterSvg.removeChild(shape));
+
+        allEntries.forEach(entry => this.onNewTimelineEntry(entry));
     }
 
     getShapeForTimelineEntry(timelineEntry) {
@@ -293,18 +281,18 @@ class VerticalBigBar extends Visualisation {
 
         //decide position
         //y
-        var yLow = this.getPosForDate(timelineEntry.fromDate);
-        var yHigh = this.getPosForDate(timelineEntry.toDate);
-        var height = yLow - yHigh;
+        const yLow = this.getPosForDate(timelineEntry.fromDate);
+        const yHigh = this.getPosForDate(timelineEntry.toDate);
+        const height = yLow - yHigh;
 
         //x
-        var lineWidth = this.config.scale.lineWidth;
-        var margin = this.config.scale.margin;
-        var left = margin + lineWidth;
+        const lineWidth = this.config.scale.lineWidth;
+        const margin = this.config.scale.margin;
+        let left = margin + lineWidth;
         left = left + level * (entryWidth + 1);
 
 
-        var shape = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+        const shape = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
         shape.setAttribute('y', yHigh);
         shape.setAttribute('x', left);
         shape.setAttribute('height', height);
