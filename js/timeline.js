@@ -6,7 +6,6 @@ Author:
 */
 
 const _ = require('lodash');
-const {VerticalSmallBar, VerticalBigBar, VerticalMinimal} = require('./visualisations/');
 const TimelineEntry = require('./timelineEntry');
 
 const defaultConfig = {
@@ -55,18 +54,20 @@ class Timeline {
         const _color = color || this.getNextColor();
         const entry = new TimelineEntry(title, fromDate, toDate, _color);
 
-        hoverSelectors.forEach((selector => entry.addHTMLElementToTriggerHover(document.querySelector(selector))));
+        hoverSelectors.forEach((selector => entry.addElementToTriggerHover(selector)));
 
         this.timelineEntries.push(entry);
         entry.addListener(this);
         this.listeners.forEach(l => l.onNewTimelineEntry(this, entry));
+        return entry;
     }
 
-    /*
-     * TimelineEntry Listener implementation
-     */
-    onHTMLElementToTriggerHoverAdded(timelineEntry, htmlElement) {
-        this.listeners.forEach(l => l.onHTMLElementToTriggerHoverAdded(timelineEntry, htmlElement));
+    onTimelineEntryHoverIn(timelineEntry) {
+        this.listeners.forEach(l => l.onTimelineEntryHoverIn(timelineEntry));
+    }
+
+    onTimelineEntryHoverOut(timelineEntry) {
+        this.listeners.forEach(l => l.onTimelineEntryHoverOut(timelineEntry));
     }
 }
 

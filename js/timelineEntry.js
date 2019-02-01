@@ -5,6 +5,8 @@ Author:
     
 */
 
+const $ = require('jquery');
+
 class TimelineEntry {
 
     constructor(title, fromDate, toDate, color) {
@@ -28,9 +30,12 @@ class TimelineEntry {
         this.listeners.push(listener);
     }
 
-    addHTMLElementToTriggerHover(htmlElement) {
-        this.highlightingHtmlElements.push(htmlElement);
-        this.listeners.forEach(l => l.onHTMLElementToTriggerHoverAdded(this, htmlElement));
+    addElementToTriggerHover(querySelector) {
+        const element = document.querySelector(querySelector);
+
+        this.highlightingHtmlElements.push(element);
+        $(element).on('mouseover', () => this.listeners.forEach(l => l.onTimelineEntryHoverIn(this)));
+        $(element).on('mouseout', () => this.listeners.forEach(l => l.onTimelineEntryHoverOut(this)));
     }
 }
 

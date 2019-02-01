@@ -25,7 +25,7 @@ const defaultConfig = {
 defaultConfig.scale = {};
 defaultConfig.scale.lineWidth = 3;
 defaultConfig.scale.margin = 5;
-defaultConfig.scale.backgroundColor = "ffffff";
+defaultConfig.scale.backgroundColor = 'ffffff';
 defaultConfig.scale.fontSize = 15;
 defaultConfig.scale.arrowHeadHeight = 13;
 defaultConfig.scale.arrowHeadWidth = 20;
@@ -59,7 +59,7 @@ class Visualisation {
             this.htmlElement.removeChild(this.htmlElement.firstChild);
         }
 
-        this.masterSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        this.masterSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
         this.masterSvg.classList.add('master');
 
         this.htmlElement.appendChild(this.masterSvg);
@@ -73,23 +73,15 @@ class Visualisation {
         return this.htmlElement.clientHeight;
     }
 
-    getConfig() {
-        return this.config;
-    }
-
-    getHTMLElement() {
-        return this.htmlElement;
-    }
-
     /*
      * Abstract Methods
      */
     repaint() {
-        throw new Error("NotImplementedException");
+        throw new Error('NotImplementedException');
     }
 
     getShapeForTimelineEntry() {
-        throw new Error("NotImplementedException");
+        throw new Error('NotImplementedException');
     }
 
 
@@ -101,26 +93,26 @@ class Visualisation {
 
         $(shape).on('mouseover', (event) => {
             timelineEntry.tooltip = new Tooltip(event, timelineEntry.title);
-            shape.classList.add("hover");
+            shape.classList.add('hover');
         });
-        shape.onmouseout = function () {
+        $(shape).on('mouseout', () => {
             timelineEntry.tooltip.destroy();
-            shape.classList.remove("hover");
-        };
+            shape.classList.remove('hover');
+        });
 
         this.timelineEntryVisualisationMaps[timelineEntry.getHash()] = shape;
-
-        for (var index in timelineEntry.highlightingHtmlElements) {
-            this.onHTMLElementToTriggerHoverAdded(timelineEntry, timelineEntry.highlightingHtmlElements[index]);
-        }
 
         this.masterSvg.appendChild(shape);
     }
 
-    onHTMLElementToTriggerHoverAdded(timelineEntry, htmlElement) {
+    onTimelineEntryHoverIn(timelineEntry) {
         const shape = this.timelineEntryVisualisationMaps[timelineEntry.getHash()];
-        $(htmlElement).on('mouseover', () => shape.classList.add("hover"));
-        $(htmlElement).on('mouseout', () => shape.classList.remove("hover"));
+        shape.classList.add('hover');
+    }
+
+    onTimelineEntryHoverOut(timelineEntry) {
+        const shape = this.timelineEntryVisualisationMaps[timelineEntry.getHash()];
+        shape.classList.remove('hover');
     }
 }
 
