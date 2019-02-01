@@ -16,46 +16,19 @@ const defaultConfig = {
 };
 
 class Timeline {
-    static get Visualisations() {
-        return {
-            VerticalSmallBar: 1,
-            VerticalBigBar: 2,
-            VerticalMinimal: 3,
-        };
-    }
-
     constructor(fromYear, config) {
         const _config = _.defaults(config, defaultConfig);
 
         this.fromYear = fromYear;
-        this.visualisations = [];
+        this.listeners = [];
         this.timelineEntries = [];
 
         this.colors = _config.entries.colors;
         this.nextColor = 0;
     }
 
-
-    addVisualisation(_visualisationType, _htmlElement, _visualisationConfig) {
-        let vis = null;
-        if (_visualisationType === Timeline.Visualisations.VerticalSmallBar) {
-            vis = new VerticalSmallBar(this, _htmlElement, _visualisationConfig);
-        } else if (_visualisationType === Timeline.Visualisations.VerticalBigBar) {
-            vis = new VerticalBigBar(this, _htmlElement, _visualisationConfig);
-        } else if (_visualisationType === Timeline.Visualisations.VerticalMinimal) {
-            vis = new VerticalMinimal(this, _htmlElement, _visualisationConfig);
-        }
-
-        if (vis != null) {
-            this.visualisations.push(vis);
-            return vis;
-        }
-
-        throw 'Unrecognized Visualisation';
-    }
-
-    update() {
-        this.visualisations.forEach((vis) => vis.update());
+    addListener(timelineListener) {
+        this.listeners.push(timelineListener);
     }
 
 
@@ -86,14 +59,14 @@ class Timeline {
 
         this.timelineEntries.push(entry);
         entry.addListener(this);
-        this.visualisations.forEach(vis => vis.onNewTimelineEntry(entry));
+        this.listeners.forEach(l => l.onNewTimelineEntry(this, entry));
     }
 
     /*
      * TimelineEntry Listener implementation
      */
     onHTMLElementToTriggerHoverAdded(timelineEntry, htmlElement) {
-        this.visualisations.forEach(vis => vis.onHTMLElementToTriggerHoverAdded(timelineEntry, htmlElement));
+        this.listeners.forEach(l => l.onHTMLElementToTriggerHoverAdded(timelineEntry, htmlElement));
     }
 }
 

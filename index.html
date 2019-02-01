@@ -21,14 +21,24 @@
 
 <script type="text/javascript" src="./bin/timeline.js"></script>
 <script type="text/javascript">
-    const {Timeline} = TimelineJs;
+    const {Timeline, Visualisations} = TimelineJs;
 
     const timeline = new Timeline(2009);
-    timeline.addVisualisation(Timeline.Visualisations.VerticalSmallBar, document.getElementById("timeline"),{
-        entry: {width: 7}
-    });
-    timeline.addVisualisation(Timeline.Visualisations.VerticalBigBar, document.getElementById("timeline2"));
-    timeline.addVisualisation(Timeline.Visualisations.VerticalMinimal, document.getElementById("timeline3"));
+    const visBigBar = Visualisations.Builder
+        .createForTimeline(timeline, '#timeline2')
+        .withBigBar()
+        .build();
+    const visSmallBar = Visualisations.Builder
+        .createForTimeline(timeline, '#timeline')
+        .withSmallBar()
+        .withOptions({
+            entry: {width: 7}
+        })
+        .build();
+    const visMinimal = Visualisations.Builder
+        .createForTimeline(timeline, '#timeline3')
+        .withMinimalBar()
+        .build();
 
     timeline.addEntry('first', new Date(2009, 3, 1), new Date(2012, 5, 1), {
         hoverSelectors: ['#highlight1']

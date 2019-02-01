@@ -8,7 +8,7 @@ Author:
 const _ = require('lodash');
 const $ = require('jquery');
 const Tooltip = require('../tooltip');
-const { LevelManagerColor, LevelManagerTime } = require('./level-manager');
+const {LevelManagerColor, LevelManagerTime} = require('./level-manager');
 
 const Level = {
     ORDER_BY_TIME: 1,
@@ -96,7 +96,7 @@ class Visualisation {
     /*
      * Implemented listeners
      */
-    onNewTimelineEntry(timelineEntry) {
+    onNewTimelineEntry(timeline, timelineEntry) {
         var shape = this.getShapeForTimelineEntry(timelineEntry);
 
         $(shape).on('mouseover', (event) => {
@@ -126,4 +126,4 @@ class Visualisation {
 
 Visualisation.Level = Level;
 
-module.exports = {Visualisation};
+module.exports = Visualisation;

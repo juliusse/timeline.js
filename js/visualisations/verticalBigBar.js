@@ -1,4 +1,4 @@
-﻿const {Visualisation} = require('./visualisation');
+﻿const Visualisation = require('./visualisation');
 
 class VerticalBigBar extends Visualisation {
     constructor(timeline, htmlElement, config) {
