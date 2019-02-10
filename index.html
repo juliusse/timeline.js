@@ -22,8 +22,9 @@
 <script type="text/javascript" src="./bin/timeline.js"></script>
 <script type="text/javascript">
     const {Timeline, Visualisations} = TimelineJs;
+    const startYear = new Date().getFullYear()-5;
 
-    const timeline = new Timeline(2009);
+    const timeline = new Timeline(startYear);
     const visBigBar = Visualisations.Builder
         .createForTimeline(timeline, '#timeline2')
         .withBigBar()
@@ -40,11 +41,11 @@
         .withMinimalBar()
         .build();
 
-    timeline.addEntry('first', new Date(2009, 3, 1), new Date(2012, 5, 1), {
+    timeline.addEntry('first', new Date(startYear, 3, 1), new Date(startYear+3, 5, 1), {
         hoverSelectors: ['#highlight1']
     });
-    timeline.addEntry('second<br>second', new Date(2004, 5, 1), new Date(2011, 11, 31));
-    timeline.addEntry('third', new Date(2010, 0, 1), new Date(2014, 5, 1));
+    timeline.addEntry('second<br>second', new Date(startYear-1, 5, 1), new Date(startYear+2, 11, 31));
+    timeline.addEntry('third', new Date(startYear+1, 1, 1), new Date(startYear + 5, 5, 1));
 
 </script>
 

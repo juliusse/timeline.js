@@ -16,33 +16,32 @@ const Level = {
 };
 
 const defaultConfig = {
+    drawToday: true,
+    drawBaseLineYear: true,
+    drawTickLabels: true,
     level: Level.ORDER_BY_TIME,
     entry: {
         width: 5
-    }
-};
-
-defaultConfig.scale = {
-    ticks: {
-        numbers: {
-            marginRight: 20,
+    },
+    scale: {
+        lineWidth: 3,
+        margin: 5,
+        backgroundColor: 'ffffff',
+        fontSize: 15,
+        arrowHeadHeight: 13,
+        arrowHeadWidth: 20,
+        numbersMarginRight: 20,
+        ticks: {
+            numbers: {
+                marginRight: 20,
+            },
+            line: {
+                margin: 3,
+                stroke: 1,
+            }
         },
-        line: {
-            margin: 3,
-            stroke: 1,
-        }
     }
 };
-defaultConfig.scale.lineWidth = 3;
-defaultConfig.scale.margin = 5;
-defaultConfig.scale.backgroundColor = 'ffffff';
-defaultConfig.scale.fontSize = 15;
-defaultConfig.scale.arrowHeadHeight = 13;
-defaultConfig.scale.arrowHeadWidth = 20;
-defaultConfig.scale.numbersMarginRight = 20;
-defaultConfig.drawToday = true;
-defaultConfig.drawBaseLineYear = true;
-defaultConfig.drawTickLabels = true;
 
 require('./visualisation.less');
 
