@@ -58,7 +58,6 @@ class VerticalSmallBar extends VerticalBase {
         this.scaleLine.setAttribute("style", "stroke:rgb(0,0,0);stroke-width:" + lineWidth);
     }
 
-//currently one tick per year
     updateArrowHead() {
         const topOffset = this.getTopOffsetForScale();
         const lineWidth = this.config.scale.lineWidth;

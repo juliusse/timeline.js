@@ -44,7 +44,9 @@ class VerticalBase extends Visualisation {
     getTopOffsetForEntry() {
         let offset = this.getTopOffsetForScale();
 
-        offset += this.config.scale.arrowHeadHeight;
+        if (this.config.scale.arrowHead.enabled) {
+            offset += this.config.scale.arrowHead.height;
+        }
 
         return offset;
     }
@@ -97,7 +99,7 @@ class VerticalBase extends Visualisation {
     updateTicks() {
         const height = this.getHeightForEntry();
         const offsetTop = this.getTopOffsetForEntry();
-        const withLabels = this.config.drawTickLabels;
+        const withLabels = this.config.scale.ticks.drawLabels;
 
         const lineWidth = this.config.scale.ticks.line.margin;
         const margin = this.config.scale.margin;
@@ -151,8 +153,6 @@ class VerticalBase extends Visualisation {
                 this.masterSvg.appendChild(text);
             }
         }
-
-
     }
 
     updateStartYearAndNowString() {

@@ -3,6 +3,7 @@ const VerticalBase = require('./verticalBase');
 
 const defaultConfig = {
     scale: {
+        lineWidth: 2,
         ticks: {
             line: {
                 stroke: 2,
@@ -83,7 +84,7 @@ class VerticalBigBar extends VerticalBase {
         const right = width - 1;
         const center = this.getCenter();
 
-        const arrowHeight = this.config.scale.arrowHeadHeight;
+        const arrowHeight = this.config.scale.arrowHead.height;
 
         const xStart = left;
         const yStart = arrowHeight + topOffset + 3;

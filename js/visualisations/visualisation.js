@@ -18,7 +18,6 @@ const Level = {
 const defaultConfig = {
     drawToday: true,
     drawBaseLineYear: true,
-    drawTickLabels: true,
     level: Level.ORDER_BY_TIME,
     entry: {
         width: 5
@@ -28,10 +27,9 @@ const defaultConfig = {
         margin: 5,
         backgroundColor: 'ffffff',
         fontSize: 15,
-        arrowHeadHeight: 13,
-        arrowHeadWidth: 20,
         numbersMarginRight: 20,
         ticks: {
+            drawLabels: true,
             numbers: {
                 marginRight: 20,
             },
@@ -40,6 +38,11 @@ const defaultConfig = {
                 stroke: 1,
             }
         },
+        arrowHead: {
+            enabled: true,
+            height: 13,
+            width: 20,
+        }
     }
 };
 

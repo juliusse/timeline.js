@@ -5,7 +5,10 @@ const defaultConfig = {
     drawToday: false,
     scale: {
         arrowHeadHeight: 0,
-    }
+        arrowHead: {
+            enabled: false,
+        },
+    },
 };
 
 class VerticalMinimal extends VerticalBase {
