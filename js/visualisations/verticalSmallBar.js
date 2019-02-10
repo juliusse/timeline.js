@@ -64,10 +64,10 @@ class VerticalSmallBar extends VerticalBase {
 
         const center = this.getCenter();
 
-        const width = this.config.scale.arrowHeadWidth;
+        const width = this.config.scale.arrowHead.width;
         const widthHalf = width / 2;
 
-        const arrowHeight = this.config.scale.arrowHeadHeight;
+        const arrowHeight = this.config.scale.arrowHead.height;
 
         const xStart = center - widthHalf;
         const yStart = arrowHeight + topOffset;
