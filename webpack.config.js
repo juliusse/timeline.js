@@ -2,9 +2,13 @@ const path = require('path');
 
 module.exports = {
     mode: 'development',
-    entry: './js/index.js',
+    entry: {
+        timeline: './js/index.js',
+        testBundle: './test/page/tests.js'
+    },
+    devtool: 'eval-source-map',
     output: {
-        filename: 'timeline.js',
+        filename: '[name].js',
         path: path.join(__dirname, 'bin'),
         library: 'TimelineJs',
         libraryTarget:'window'

@@ -6,6 +6,7 @@ Author:
 */
 
 const $ = require('jquery');
+const sha1 = require('sha1');
 
 class TimelineEntry {
 
@@ -23,7 +24,7 @@ class TimelineEntry {
     }
 
     getHash() {
-        return this.title + "_" + this.fromDate.getTime() + "_" + this.toDate.getTime();
+        return sha1(this.title + "_" + this.fromDate.getTime() + "_" + this.toDate.getTime());
     }
 
     addListener(listener) {

@@ -126,7 +126,7 @@ class VerticalBase extends Visualisation {
         for (let i = 0; i < ticks; i += 1) {
             const yPos = offsetTop + height - i * stepSize;
             const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-
+            const year = this.timeline.getFromYear() + i;
             line.setAttribute('x1', left);
             line.setAttribute('y1', yPos);
 
@@ -134,7 +134,7 @@ class VerticalBase extends Visualisation {
             line.setAttribute('y2', yPos);
 
             line.setAttribute('style', 'stroke:rgb(0,0,0);stroke-width:' + this.getTickStrokeWidth());
-
+            line.classList.add(`year-${year}`);
             this.tickSvgs.push(line);
             this.masterSvg.appendChild(line);
 

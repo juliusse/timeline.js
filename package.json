@@ -1,12 +1,8 @@
 {
   "name": "timeline.js",
   "version": "1.0.0",
-  "description": "timeline.js ===========",
+  "description": "timeline.js",
   "main": "js/index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start:dev": "webpack-dev-server"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/juliusse/timeline.js.git"
@@ -26,16 +22,18 @@
     }
   },
   "devDependencies": {
-    "css-loader": "^2.1.0",
-    "less": "^3.9.0",
-    "less-loader": "^4.1.0",
-    "style-loader": "^0.23.1",
+    "chai": "4.2.0",
+    "css-loader": "2.1.0",
+    "less": "3.9.0",
+    "less-loader": "4.1.0",
+    "mocha": "5.2.0",
+    "style-loader": "0.23.1",
     "webpack": "4.8.3",
-    "webpack-cli": "2.1.3",
-    "webpack-dev-server": "3.1.4"
+    "webpack-cli": "3.2.3"
   },
   "dependencies": {
-    "jquery": "^3.3.1",
-    "lodash": "^4.17.11"
+    "jquery": "3.3.1",
+    "lodash": "4.17.11",
+    "sha1": "1.1.1"
   }
 }

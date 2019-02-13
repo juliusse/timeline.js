@@ -112,6 +112,8 @@ class Visualisation {
             shape.classList.remove('hover');
         });
 
+        shape.classList.add(`entry-${timelineEntry.getHash()}`);
+
         this.timelineEntryVisualisationMaps[timelineEntry.getHash()] = shape;
 
         this.masterSvg.appendChild(shape);
